@@ -1,0 +1,1 @@
+@"C:\Qt\Tools\QtCreator\bin\qtcreator.exe" -client "C:\Users\79082\Documents\QtProjects\QuickUstcWlt\CMakeLists.txt"

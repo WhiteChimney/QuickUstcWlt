@@ -11,15 +11,6 @@ Widget::Widget(QWidget *parent)
     trayMenu = new QMenu(this);
 
     trayMenu->addSeparator();
-    actionExit = new QAction(tr("退出"),this);      trayMenu->addAction(actionExit);
-    actionShowPref = new QAction(tr("首选项"),this); trayMenu->addAction(actionShowPref);
-    actionGetCurrentStatus = new QAction(tr("获取当前网络状态"),this);
-    trayMenu->addAction(actionGetCurrentStatus);
-    connect(actionExit, &QAction::triggered, qApp, &QApplication::quit);
-    connect(actionShowPref, &QAction::triggered, this, &Widget::show);
-    connect(actionGetCurrentStatus, &QAction::triggered, this, &Widget::getCurretStatus);
-
-    trayMenu->addSeparator();
     menuChangeTunnel = trayMenu->addMenu(tr("设置通道"));
     actionTunnel1 = new QAction(tr("通道1"),this); menuChangeTunnel->addAction(actionTunnel1);
     actionTunnel2 = new QAction(tr("通道2"),this); menuChangeTunnel->addAction(actionTunnel2);
@@ -49,9 +40,20 @@ Widget::Widget(QWidget *parent)
     connect(actionTunnel9, &QAction::triggered, this, [&](){currentTunnel = 8;});
     connect(actionTunnel9, &QAction::triggered, this, &Widget::postRequest);
 
+    trayMenu->addSeparator();
+    actionGetCurrentStatus = new QAction(tr("获取当前网络状态"),this);
+    trayMenu->addAction(actionGetCurrentStatus);
+    actionShowPref = new QAction(tr("首选项"),this); trayMenu->addAction(actionShowPref);
+    actionExit = new QAction(tr("退出"),this);      trayMenu->addAction(actionExit);
+    connect(actionGetCurrentStatus, &QAction::triggered, this, &Widget::getCurretStatus);
+    connect(actionShowPref, &QAction::triggered, this, &Widget::show);
+    connect(actionExit, &QAction::triggered, qApp, &QApplication::quit);
+
 //    设置系统托盘
     trayIcon = new QSystemTrayIcon(this);
-    trayIcon->setIcon(QIcon("/Users/noland/Documents/QtProjects/QuickUstcWlt/WLT_logo.png"));
+    QString project_dir = "C:/Users/79082/Documents/QtProjects/QuickUstcWlt/";
+//    QString project_dir = "/Users/noland/Documents/QtProjects/QuickUstcWlt/";
+    trayIcon->setIcon(QIcon(project_dir + QString("WLT_logo.png")));
     trayIcon->setContextMenu(trayMenu);
     trayIcon->show();
 
@@ -112,5 +114,11 @@ void Widget::postRequest()
 void Widget::on_buttonSet_clicked()
 {
     this->fetchUiData();
+}
+
+
+void Widget::on_buttonClose_clicked()
+{
+    this->hide();
 }
 

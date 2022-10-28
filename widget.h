@@ -62,5 +62,6 @@ public:
 
 private slots:
     void on_buttonSet_clicked();
+    void on_buttonClose_clicked();
 };
 #endif // WIDGET_H
