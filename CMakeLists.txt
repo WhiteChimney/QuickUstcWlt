@@ -61,3 +61,8 @@ install(TARGETS QuickUstcWlt
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(QuickUstcWlt)
 endif()
+
+
+find_package(Qt6 REQUIRED COMPONENTS Network Core5Compat)
+target_link_libraries(QuickUstcWlt PRIVATE Qt6::Network)
+target_link_libraries(QuickUstcWlt PUBLIC Qt6::Core5Compat)

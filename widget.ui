@@ -6,13 +6,127 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>246</width>
+    <height>256</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Widget</string>
   </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>密码</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>默认通道</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="textUserPassword">
+     <property name="text">
+      <string>147913</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QPushButton" name="buttonSet">
+     <property name="text">
+      <string>确定</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>用户名</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QPushButton" name="buttonClose">
+     <property name="text">
+      <string>关闭</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QComboBox" name="comboTunnel">
+     <item>
+      <property name="text">
+       <string>通道1</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>通道2</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>通道3</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>通道4</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>通道5</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>通道6</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>通道7</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>通道8</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>通道9</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="textUserName">
+     <property name="text">
+      <string>xhzhan</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLineEdit" name="textTimeExpire">
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>默认时长</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>
