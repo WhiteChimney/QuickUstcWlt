@@ -7,6 +7,8 @@
 #include <QMenu>
 #include <QTimer>
 #include <QMessageBox>
+#include <QListView>
+#include <QThread>
 
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkReply>
@@ -44,19 +46,11 @@ private:
     QAction *actionGetCurrentStatus;
     QAction *actionLogOut;
     QMenu *menuChangeTunnel;
-    QAction *actionTunnel1,
-            *actionTunnel2,
-            *actionTunnel3,
-            *actionTunnel4,
-            *actionTunnel5,
-            *actionTunnel6,
-            *actionTunnel7,
-            *actionTunnel8,
-            *actionTunnel9;
+    QVector<QAction*> vActionTunnel;
     QAction *actionQuickLogIn;
 
-    QNetworkAccessManager* naManager;
-    QNetworkRequest nRequest;
+    QNetworkAccessManager *loginManager, *logoutManager, *setManager;
+    QNetworkRequest loginRequest, logoutRequest, setRequest;
     QTextCodec* gb_code = QTextCodec::codecForName("gb2312");
     QTextCodec* utf8_code = QTextCodec::codecForName("UTF-8");
 
@@ -69,6 +63,10 @@ private:
     bool enableAutoLogin, enableRunAtStartup, enableTimedLogIn;
     QString timedLogIn;
     QTimer* logInTimer;
+
+    bool enableAutoCheckNet;
+    QString timedCheckNet;
+    QTimer* timerCheckNet;
 
 private:
     QString iniPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
@@ -86,18 +84,22 @@ public:
 
 public:
     void setupTrayMenu();
+    void dealTrayIconActivated(QSystemTrayIcon::ActivationReason);
+    void setCheckedTunnel(int checkedTunnel);
     void fetchUiData(), pushUiData();
     void logInWlt();        void dealLogInWlt(QNetworkReply*);
-    void logOutWlt();       void dealLogOutWlt(QNetworkReply*);
-    void setTunnel();       void dealSetTunnel(QNetworkReply*);
+    void logOutWlt();
+    void setTunnel(int tunnel); void dealSetTunnel(QNetworkReply*);
     void getCurrentStatus(QString* answer);
-    void quickSetTunnel();
     void setRunAtStartUp(const QString &appPath);
     void unsetRunAtStartUp(const QString &appPath);
 
 private slots:
     void on_buttonSet_clicked();
     void on_buttonClose_clicked();
-    void on_checkboxEnableTimedLogIn_stateChanged(int arg1);
+    void on_checkboxEnableTimedLogIn_stateChanged(int);
+    void on_checkboxTimedCheckNet_stateChanged(int);
+    void on_comboTunnel_activated(int index);
+    void on_buttonHelp_clicked();
 };
 #endif // WIDGET_H
