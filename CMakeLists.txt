@@ -14,6 +14,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
+set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/images/app_icon_win.rc")
+
 set(PROJECT_SOURCES
         main.cpp
         widget.cpp
@@ -25,6 +27,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(QuickUstcWlt
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        ${app_icon_resource_windows}
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET QuickUstcWlt APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -66,3 +69,20 @@ endif()
 find_package(Qt6 REQUIRED COMPONENTS Network Core5Compat)
 target_link_libraries(QuickUstcWlt PRIVATE Qt6::Network)
 target_link_libraries(QuickUstcWlt PUBLIC Qt6::Core5Compat)
+
+qt_add_resources(QuickUstcWlt "app_images"
+    PREFIX "/"
+    FILES
+        images/WLT_logo.ico
+        images/WLT_logo.png
+        images/WLT_logo_0.png
+        images/WLT_logo_1.png
+        images/WLT_logo_2.png
+        images/WLT_logo_3.png
+        images/WLT_logo_4.png
+        images/WLT_logo_5.png
+        images/WLT_logo_6.png
+        images/WLT_logo_7.png
+        images/WLT_logo_8.png
+        images/WLT_logo_none.png
+)
