@@ -5,35 +5,30 @@ Widget::Widget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::Widget)
 {
+//    设置 UI
     ui->setupUi(this);
     this->setWindowTitle(tr("首选项"));
-    ui->comboTunnel->view()->setMinimumWidth(8*ui->comboTunnel->itemText(0).size());
+    ui->comboDefaultTunnel->view()->setMinimumWidth(8*ui->comboDefaultTunnel->itemText(0).size());
 
-//    设置菜单目录
+//    设置任务
+    naManager = new NetManager(this, userName, password, defaultTunnel, expireTime);
+    connect(naManager, &NetManager::returnTunnel, this, &Widget::getCurrentTunnel);
+    scheduledCheckNetTimer = new QTimer(this);
+    connect(scheduledCheckNetTimer, &QTimer::timeout, naManager, [=](){naManager->checkNet();});
+    scheduledLoginTimer = new QTimer(this);
+    connect(scheduledLoginTimer, &QTimer::timeout, naManager, [=](){naManager->setTunnel(defaultTunnel);});
+
+//    设置托盘菜单目录
     this->setupTrayMenu();
 
-//    设置系统托盘
+//    设置系统托盘图标
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setIcon(QIcon(":/images/WLT_logo.png"));
     trayIcon->setContextMenu(trayMenu);
     connect(trayIcon, &QSystemTrayIcon::activated, this, &Widget::dealTrayIconActivated);
     trayIcon->show();
 
-//    设置网络
-    loginManager = new QNetworkAccessManager(this);
-    connect(loginManager, &QNetworkAccessManager::finished, this, &Widget::dealLogInWlt);
-    logoutManager = new QNetworkAccessManager(this);
-    connect(logoutManager, &QNetworkAccessManager::finished, this, &Widget::logInWlt);
-    setManager = new QNetworkAccessManager(this);
-    connect(setManager, &QNetworkAccessManager::finished, this, &Widget::dealSetTunnel);
-
-//    设置时钟
-    logInTimer = new QTimer(this);
-    connect(logInTimer, &QTimer::timeout, this, [=](){this->setTunnel(defaultTunnel);});
-    timerCheckNet = new QTimer(this);
-    connect(timerCheckNet, &QTimer::timeout, this, &Widget::logInWlt);
-
-//    检查是否存在配置文件（ini）
+//    检查是否存在配置文件
     QFileInfo iniInfo(iniName);
     if (iniInfo.isFile())
         loadFromIni();   // 存在配置则加载
@@ -44,11 +39,9 @@ Widget::Widget(QWidget *parent)
         saveToIni();     // 否则保存当前配置
     }
 
+//    启动计划任务
     if (enableAutoLogin)
-        this->setTunnel(defaultTunnel);
-    else
-        this->logInWlt();
-
+        on_buttonSet_clicked();
 }
 
 Widget::~Widget()
@@ -61,11 +54,14 @@ void Widget::setupTrayMenu()
     trayMenu = new QMenu(this);
 
     trayMenu->addSeparator();
+
     actionQuickLogIn = new QAction(tr("一键上网"),this);
     trayMenu->addAction(actionQuickLogIn);
-    connect(actionQuickLogIn, &QAction::triggered, this, &Widget::setTunnel);
+    connect(actionQuickLogIn, &QAction::triggered, naManager, [=](){naManager->setTunnel(defaultTunnel);});
+
+    menuChangeTunnel = new QMenu(this);
     menuChangeTunnel = trayMenu->addMenu(tr("登陆其他出口"));
-    QAction* actionTunnel = new QAction(tr("1 教育网出口"),this); vActionTunnel.append(actionTunnel);
+    QAction *actionTunnel = new QAction(tr("1 教育网出口"),this); vActionTunnel.append(actionTunnel);
     actionTunnel = new QAction(tr("2 电信网出口"),this);   vActionTunnel.append(actionTunnel);
     actionTunnel = new QAction(tr("3 联通网出口"),this);   vActionTunnel.append(actionTunnel);
     actionTunnel = new QAction(tr("4 电信网出口 2"),this); vActionTunnel.append(actionTunnel);
@@ -81,23 +77,183 @@ void Widget::setupTrayMenu()
         actionTunnel->setCheckable(true);
         connect(actionTunnel, &QAction::triggered, this, [=](){
             currentTunnel = i;
-            this->setTunnel(i);
+            naManager->setTunnel(i);
         });
     }
 
     trayMenu->addSeparator();
+
     actionGetCurrentStatus = new QAction(tr("获取当前网络状态"),this);
     trayMenu->addAction(actionGetCurrentStatus);
-    connect(actionGetCurrentStatus, &QAction::triggered, this, &Widget::logInWlt);
+    connect(actionGetCurrentStatus, &QAction::triggered, naManager, [=](){naManager->checkNet();});
+
     actionLogOut = new QAction(tr("退出登陆网络通"),this);
     trayMenu->addAction(actionLogOut);
-    connect(actionLogOut, &QAction::triggered, this, &Widget::logOutWlt);
+    connect(actionLogOut, &QAction::triggered, naManager, [=](){naManager->logoutWlt();});
 
     trayMenu->addSeparator();
+
     actionShowPref = new QAction(tr("首选项"),this); trayMenu->addAction(actionShowPref);
-    actionExit = new QAction(tr("退出"),this);      trayMenu->addAction(actionExit);
     connect(actionShowPref, &QAction::triggered, this, &Widget::show);
+
+    actionExit = new QAction(tr("退出"),this);      trayMenu->addAction(actionExit);
     connect(actionExit, &QAction::triggered, qApp, &QApplication::quit);
+}
+
+void Widget::dealTrayIconActivated(QSystemTrayIcon::ActivationReason reason)
+{
+    switch (reason) {
+    case QSystemTrayIcon::Trigger:      // windows 左键单击
+        this->show();
+        break;
+    case QSystemTrayIcon::Context:      // windows 右键单击
+        break;
+    case QSystemTrayIcon::DoubleClick:  // windows 左键双击
+        break;
+    case QSystemTrayIcon::MiddleClick:  // windows 中键单击
+        naManager->checkNet();
+        break;
+    default:
+        break;
+    }
+}
+
+void Widget::fetchUiData()
+{
+    userName = ui->textUserName->text();
+    password = ui->textPassword->text();
+    defaultTunnel = ui->comboDefaultTunnel->currentIndex();
+    expireTimeIndex = ui->comboExpireTime->currentIndex();
+    switch (expireTimeIndex) {
+    case 0:
+        expireTime = "0";
+        break;
+    case 1:
+        expireTime = "3600";
+        break;
+    case 2:
+        expireTime = "14400";
+        break;
+    case 3:
+        expireTime = "39600";
+        break;
+    case 4:
+        expireTime = "50400";
+        break;
+    default:
+        break;
+    }
+
+    enableScheduledCheckNet = ui->checkboxEnableScheduledCheckNet->isChecked();
+    scheduledCheckNetTime = ui->textScheduledCheckNetTime->text();
+
+    enableScheduledLogin = ui->checkboxEnableScheduledLogin->isChecked();
+    scheduledLoginTime = ui->textScheduledLoginTime->text();
+
+    enableAutoLogin = ui->checkboxEnableAutoLogIn->isChecked();
+    enableRunAtStartup = ui->checkboxEnableRunAtStartup->isChecked();
+
+    pushUiData();
+    naManager->updateData(userName, password, defaultTunnel, expireTime);
+}
+
+void Widget::on_textScheduledCheckNetTime_editingFinished()
+{
+    if (ui->textScheduledCheckNetTime->text().toInt() < 3)
+        ui->textScheduledCheckNetTime->setText(QString("3"));
+}
+
+void Widget::on_textScheduledLoginTime_editingFinished()
+{
+    if (ui->textScheduledLoginTime->text().toInt() < 10)
+        ui->textScheduledLoginTime->setText(QString("10"));
+}
+
+void Widget::pushUiData()
+{
+    ui->textUserName->setText(userName);
+    ui->textPassword->setText(password);
+    ui->comboDefaultTunnel->setCurrentIndex(defaultTunnel);
+    ui->comboExpireTime->setCurrentIndex(expireTimeIndex);
+
+    ui->checkboxEnableScheduledCheckNet->setChecked(enableScheduledCheckNet);
+    ui->textScheduledCheckNetTime->setText(scheduledCheckNetTime);
+    ui->textScheduledCheckNetTime->setEnabled(enableScheduledCheckNet);
+
+    ui->checkboxEnableScheduledLogin->setChecked(enableScheduledLogin);
+    ui->textScheduledLoginTime->setText(scheduledLoginTime);
+    ui->textScheduledLoginTime->setEnabled(enableScheduledLogin);
+
+    ui->checkboxEnableAutoLogIn->setChecked(enableAutoLogin);
+    ui->checkboxEnableRunAtStartup->setChecked(enableRunAtStartup);
+}
+
+void Widget::saveToIni()
+{
+    fetchUiData();
+
+    QSettings *iniSettings = new QSettings(iniName, QSettings::IniFormat);
+    iniSettings->setValue("userName",userName);
+    iniSettings->setValue("password",this->passwordEncryption(password.toLocal8Bit().data(),key));
+    iniSettings->setValue("defaultTunnel",defaultTunnel);
+    iniSettings->setValue("expireTimeIndex",expireTimeIndex);
+    iniSettings->setValue("enableScheduledCheckNet",enableScheduledCheckNet);
+    iniSettings->setValue("scheduledCheckNetTime",scheduledCheckNetTime);
+    iniSettings->setValue("enableScheduledLogin",enableScheduledLogin);
+    iniSettings->setValue("scheduledLoginTime",scheduledLoginTime);
+    iniSettings->setValue("enableAutoLogin",enableAutoLogin);
+    iniSettings->setValue("enableRunAtStartup",enableRunAtStartup);
+    delete iniSettings;
+}
+
+void Widget::loadFromIni()
+{
+    QSettings *iniSettings = new QSettings(iniName, QSettings::IniFormat);
+    userName = iniSettings->value("userName").toString();
+    password = QString(this->passwordDecryption(iniSettings->value("password").toByteArray(),key));
+    defaultTunnel = iniSettings->value("defaultTunnel").toInt();
+    expireTimeIndex = iniSettings->value("expireTimeIndex").toInt();
+    enableScheduledCheckNet = iniSettings->value("enableScheduledCheckNet").toBool();
+    scheduledCheckNetTime = iniSettings->value("scheduledCheckNetTime").toString();
+    enableScheduledLogin = iniSettings->value("enableScheduledLogin").toBool();
+    scheduledLoginTime = iniSettings->value("scheduledLoginTime").toString();
+    enableAutoLogin = iniSettings->value("enableAutoLogin").toBool();
+    enableRunAtStartup = iniSettings->value("enableRunAtStartup").toBool();
+    delete iniSettings;
+
+    pushUiData();
+}
+
+void Widget::getCurrentTunnel(int m_currentTunnel)
+{
+    if (m_currentTunnel == -1)
+    {
+        currentTunnel = defaultTunnel;
+        scheduledCheckNetTimer->stop();
+        scheduledLoginTimer->stop();
+        ui->checkboxEnableScheduledCheckNet->setChecked(false);
+        ui->checkboxEnableScheduledLogin->setChecked(false);
+        currentTunnel = defaultTunnel;
+        QMessageBox::warning(this,
+                               QString("登陆失败"),
+                               QString("请检查用户名与密码"),
+                               QMessageBox::Ok);
+        this->show();
+    }
+    else
+    {
+        if (m_currentTunnel < 9)
+        {
+            currentTunnel = m_currentTunnel;
+            trayIcon->setIcon(QIcon(QString(":/images/WLT_logo_") + QString::number(currentTunnel) + QString(".png")));
+        }
+        else
+        {
+            currentTunnel = m_currentTunnel - 1958;
+            trayIcon->setIcon(QIcon(QString(":/images/WLT_logo_none.png")));
+        }
+        this->setCheckedTunnel(currentTunnel);
+    }
 }
 
 void Widget::setCheckedTunnel(int checkedTunnel)
@@ -112,172 +268,25 @@ void Widget::setCheckedTunnel(int checkedTunnel)
 
 }
 
-void Widget::dealTrayIconActivated(QSystemTrayIcon::ActivationReason reason)
-{
-    switch (reason) {
-    case QSystemTrayIcon::Trigger:      // windows 左键单击
-        this->show();
-        break;
-    case QSystemTrayIcon::Context:      // windows 右键单击
-        break;
-    case QSystemTrayIcon::DoubleClick:  // windows 左键双击
-        break;
-    case QSystemTrayIcon::MiddleClick:  // windows 中键单击
-        this->logInWlt();
-        break;
-    default:
-        break;
-    }
-}
-
-void Widget::fetchUiData()
-{
-    userName = ui->textUserName->text();
-    userPassword = ui->textUserPassword->text();
-    defaultTunnel = ui->comboTunnel->currentIndex();
-    timeExpireIndex = ui->comboExpireTime->currentIndex();
-    switch (timeExpireIndex) {
-    case 0:
-        timeExpire = "0";
-        break;
-    case 1:
-        timeExpire = "3600";
-        break;
-    case 2:
-        timeExpire = "14400";
-        break;
-    case 3:
-        timeExpire = "39600";
-        break;
-    case 4:
-        timeExpire = "50400";
-        break;
-    default:
-        break;
-    }
-
-    enableAutoLogin = ui->checkboxEnableAutoLogIn->isChecked();
-    enableRunAtStartup = ui->checkboxEnableRunAtStartup->isChecked();
-    enableTimedLogIn = ui->checkboxEnableTimedLogIn->isChecked();
-
-    timedCheckNet = ui->textTimedCheckNet->text();
-    if (timedCheckNet.toInt() < 3)
-        timedCheckNet = QString("3");
-
-    timedLogIn = ui->textTimedLogIn->text();
-    if (timedLogIn.toInt() < 10)
-        timedLogIn = QString("10");
-    enableAutoCheckNet = ui->checkboxTimedCheckNet->isChecked();
-
-    pushUiData();
-}
-
-void Widget::pushUiData()
-{
-    ui->textUserName->setText(userName);
-    ui->textUserPassword->setText(userPassword);
-    ui->comboTunnel->setCurrentIndex(defaultTunnel);
-    ui->comboExpireTime->setCurrentIndex(timeExpireIndex);
-    ui->checkboxEnableAutoLogIn->setChecked(enableAutoLogin);
-    ui->checkboxEnableRunAtStartup->setChecked(enableRunAtStartup);
-    ui->checkboxEnableTimedLogIn->setChecked(enableTimedLogIn);
-    ui->textTimedLogIn->setText(timedLogIn);
-    ui->textTimedLogIn->setEnabled(enableTimedLogIn);
-    ui->checkboxTimedCheckNet->setChecked(enableAutoCheckNet);
-    ui->textTimedCheckNet->setText(timedCheckNet);
-    ui->textTimedCheckNet->setEnabled(enableAutoCheckNet);
-}
-
-void Widget::logInWlt()
-{
-    fetchUiData();
-    loginRequest.setUrl(QUrl(QString("http://wlt.ustc.edu.cn/cgi-bin/ip?name=" + userName)
-                                                + QString("&password=") + userPassword
-                                                + QString("&cmd=login")));
-    loginManager->get(loginRequest);
-}
-
-void Widget::dealLogInWlt(QNetworkReply* nReply)
-{
-    QString answer = gb_code->toUnicode(nReply->readAll());
-    this->getCurrentStatus(&answer);
-}
-
-void Widget::getCurrentStatus(QString* answer)
-{
-    currentTunnel = answer->mid(answer->indexOf(QString("状态:<br>\n出口:"))+12,1).toInt()-1;
-    if (currentTunnel < 0 or currentTunnel > 9)
-    {
-        if (timerCheckNet->isActive())
-            timerCheckNet->stop();
-        if (logInTimer->isActive())
-            logInTimer->stop();
-        ui->checkboxTimedCheckNet->setChecked(false);
-        ui->checkboxEnableTimedLogIn->setChecked(false);
-        currentTunnel = defaultTunnel;
-        QMessageBox::warning(this,
-                               QString("登陆失败"),
-                               QString("请检查用户名与密码"),
-                               QMessageBox::Ok);
-        this->show();
-    }
-    else
-    {
-        if (answer->mid(answer->indexOf(QString("<br>\n权限"))+9,2).indexOf("校内"))
-        {
-            access = true;
-            trayIcon->setIcon(QIcon(QString(":/images/WLT_logo_") + QString::number(currentTunnel) + QString(".png")));
-            this->setCheckedTunnel(currentTunnel);
-        }
-        else
-        {
-            access = false;
-            trayIcon->setIcon(QIcon(QString(":/images/WLT_logo_none.png")));
-        }
-    }
-}
-
-void Widget::logOutWlt()
-{
-    logoutRequest.setUrl(QUrl(QString("http://wlt.ustc.edu.cn/cgi-bin/ip?cmd=logout")));
-    logoutManager->get(logoutRequest);
-}
-
-
-void Widget::setTunnel(int tunnel)
-{
-    setRequest.setUrl(QUrl(QString("http://wlt.ustc.edu.cn/cgi-bin/ip?name=" + userName)
-                       + QString("&password=") + userPassword
-                       + QString("&cmd=set&type=") + QString::number(tunnel)
-                       + QString("&exp=") + timeExpire));
-    setManager->get(setRequest);
-}
-
-void Widget::dealSetTunnel(QNetworkReply* nReply)
-{
-    QString answer = gb_code->toUnicode(nReply->readAll());
-    this->getCurrentStatus(&answer);
-}
-
 void Widget::on_buttonSet_clicked()
 {
     this->saveToIni();
-    this->setTunnel(defaultTunnel);
 
-    if (enableAutoCheckNet)
-        timerCheckNet->start(1000*timedCheckNet.toInt()+0.17);
+    if (enableScheduledCheckNet)
+        scheduledCheckNetTimer->start(1000*scheduledCheckNetTime.toInt()+0.17);
     else
-        timerCheckNet->stop();
+        scheduledCheckNetTimer->stop();
 
-    if (enableTimedLogIn)
-        logInTimer->start(1000*timedLogIn.toInt()+0.59);
+    if (enableScheduledLogin)
+        scheduledLoginTimer->start(1000*scheduledLoginTime.toInt()+0.59);
     else
-        logInTimer->stop();
+        scheduledLoginTimer->stop();
+
 
     if (enableRunAtStartup)
-        this->setRunAtStartUp(qApp->applicationFilePath());
+        this->setRunAtStartup(true);
     else
-        this->unsetRunAtStartUp(qApp->applicationFilePath());
+        this->setRunAtStartup(false);
 
     ui->buttonSet->setText(tr("确定 √"));
     QTimer* tempTimer = new QTimer(this);
@@ -287,127 +296,30 @@ void Widget::on_buttonSet_clicked()
         delete tempTimer;
     });
     tempTimer->start(250);
+
+    naManager->setTunnel(defaultTunnel);
 }
 
 void Widget::on_buttonClose_clicked()
 {
-    this->on_buttonSet_clicked();
     this->hide();
 }
 
-void Widget::saveToIni()
-{
-    fetchUiData();
-
-    QSettings *iniSettings = new QSettings(iniName, QSettings::IniFormat);
-    iniSettings->setValue("userName",userName);
-    iniSettings->setValue("userPassword",this->simpleEncryption(userPassword.toLocal8Bit().data(),key));
-    iniSettings->setValue("defaultTunnel",defaultTunnel);
-    iniSettings->setValue("timeExpireIndex",timeExpireIndex);
-    iniSettings->setValue("enableAutoLogin",enableAutoLogin);
-    iniSettings->setValue("enableRunAtStartup",enableRunAtStartup);
-    iniSettings->setValue("enableTimedLogIn",enableTimedLogIn);
-    iniSettings->setValue("timedLogIn",timedLogIn);
-    iniSettings->setValue("enableAutoCheckNet",enableAutoCheckNet);
-    iniSettings->setValue("timedCheckNet",timedCheckNet);
-    delete iniSettings;
-}
-
-void Widget::loadFromIni()
-{
-    QSettings *iniSettings = new QSettings(iniName, QSettings::IniFormat);
-    userName = iniSettings->value("userName").toString();
-    userPassword = QString(this->simpleDecryption(iniSettings->value("userPassword").toByteArray(),key));
-    defaultTunnel = iniSettings->value("defaultTunnel").toInt();
-    timeExpireIndex = iniSettings->value("timeExpireIndex").toInt();
-    enableAutoLogin = iniSettings->value("enableAutoLogin").toBool();
-    enableRunAtStartup = iniSettings->value("enableRunAtStartup").toBool();
-    enableTimedLogIn = iniSettings->value("enableTimedLogIn").toBool();
-    timedLogIn = iniSettings->value("timedLogIn").toString();
-    enableAutoCheckNet = iniSettings->value("enableAutoCheckNet").toBool();
-    timedCheckNet = iniSettings->value("timedCheckNet").toString();
-    delete iniSettings;
-
-    pushUiData();
-}
-
-void Widget::on_checkboxEnableTimedLogIn_stateChanged(int checkState)
+void Widget::on_checkboxEnableScheduledLogin_stateChanged(int checkState)
 {
     if (checkState == Qt::Checked)
-        ui->textTimedLogIn->setEnabled(true);
+        ui->textScheduledLoginTime->setEnabled(true);
     else
-        ui->textTimedLogIn->setEnabled(false);
+        ui->textScheduledLoginTime->setEnabled(false);
 }
 
-//设置程序自启动 appPath程序路径
-void Widget::setRunAtStartUp(const QString &appPath)
-{
-    //注册表路径需要使用双反斜杠，如果是32位系统，要使用QSettings::Registry32Format
-    QSettings settings("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
-                       QSettings::Registry64Format);
-
-    //以程序名称作为注册表中的键
-    //根据键获取对应的值（程序路径）
-    QFileInfo fInfo(appPath);
-    QString name = fInfo.baseName();
-    QString path = settings.value(name).toString();
-
-    //如果注册表中的路径和当前程序路径不一样，
-    //则表示没有设置自启动或自启动程序已经更换了路径
-    //toNativeSeparators的意思是将"/"替换为"\"
-    QString newPath = QDir::toNativeSeparators(appPath);
-    if (path != newPath)
-        settings.setValue(name, newPath);
-}
-
-void Widget::unsetRunAtStartUp(const QString &appPath)
-{
-    //注册表路径需要使用双反斜杠，如果是32位系统，要使用QSettings::Registry32Format
-    QSettings settings("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
-                       QSettings::Registry64Format);
-
-    //以程序名称作为注册表中的键
-    //根据键获取对应的值（程序路径）
-    QFileInfo fInfo(appPath);
-    QString name = fInfo.baseName();
-    QString path = settings.value(name).toString();
-
-    //如果注册表中的路径和当前程序路径不一样，
-    //则表示没有设置自启动或自启动程序已经更换了路径
-    //toNativeSeparators的意思是将"/"替换为"\"
-    QString newPath = QDir::toNativeSeparators(appPath);
-    if (path == newPath)
-        settings.remove(name);
-}
-
-QByteArray Widget::simpleEncryption(QByteArray password, int key)
-{
-    for (int i = 0; i < password.size(); i++)
-        password[i] += key;
-    return password;
-}
-
-QByteArray Widget::simpleDecryption(QByteArray password, int key)
-{
-    for (int i = 0; i < password.size(); i++)
-        password[i] -= key;
-    return password;
-}
-
-void Widget::on_checkboxTimedCheckNet_stateChanged(int checkState)
+void Widget::on_checkboxEnableScheduledCheckNet_stateChanged(int checkState)
 {
     if (checkState == Qt::Checked)
-        ui->textTimedCheckNet->setEnabled(true);
+        ui->textScheduledCheckNetTime->setEnabled(true);
     else
-        ui->textTimedCheckNet->setEnabled(false);
+        ui->textScheduledCheckNetTime->setEnabled(false);
 }
-
-
-void Widget::on_comboTunnel_activated(int index)
-{
-    ui->comboTunnel->view()->setMinimumWidth(1000);
-}
-
 
 void Widget::on_buttonHelp_clicked()
 {
@@ -427,3 +339,46 @@ void Widget::on_buttonHelp_clicked()
     QMessageBox::about(this,tr("操作说明"),helpMessage);
 }
 
+//设置程序自启动 appPath程序路径
+void Widget::setRunAtStartup(bool setEable)
+{
+    //注册表路径需要使用双反斜杠，如果是32位系统，要使用QSettings::Registry32Format
+    QSettings settings("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                       QSettings::Registry64Format);
+
+    //以程序名称作为注册表中的键
+    //根据键获取对应的值（程序路径）
+    const QString appPath = qApp->applicationFilePath();
+    QFileInfo fInfo(appPath);
+    QString name = fInfo.baseName();
+    QString path = settings.value(name).toString();
+
+    //如果注册表中的路径和当前程序路径不一样，
+    //则表示没有设置自启动或自启动程序已经更换了路径
+    //toNativeSeparators的意思是将"/"替换为"\"
+    QString newPath = QDir::toNativeSeparators(appPath);
+    if (path != newPath)
+    {
+        if (setEable)
+            settings.setValue(name, newPath);
+    }
+    else
+    {
+        if (!setEable)
+            settings.remove(name);
+    }
+}
+
+QByteArray Widget::passwordEncryption(QByteArray password, int key)
+{
+    for (int i = 0; i < password.size(); i++)
+        password[i] += key;
+    return password;
+}
+
+QByteArray Widget::passwordDecryption(QByteArray password, int key)
+{
+    for (int i = 0; i < password.size(); i++)
+        password[i] -= key;
+    return password;
+}

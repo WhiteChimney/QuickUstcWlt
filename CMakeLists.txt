@@ -21,6 +21,7 @@ set(PROJECT_SOURCES
         widget.cpp
         widget.h
         widget.ui
+        netmanager.h netmanager.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

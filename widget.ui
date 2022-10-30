@@ -32,155 +32,10 @@
    <string>Widget</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="buttonHelp">
-       <property name="text">
-        <string>使用说明</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="buttonSet">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>确定</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="buttonClose">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>关闭</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_3">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
    <item row="1" column="0">
     <layout class="QGridLayout" name="gridLayout_2">
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>密码</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QLineEdit" name="textTimedCheckNet">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>30</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>默认时长</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QComboBox" name="comboExpireTime">
-       <item>
-        <property name="text">
-         <string>永久</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>1 小时</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>4 小时</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>11 小时</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>14 小时</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="textUserPassword">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>pass</string>
-       </property>
-       <property name="echoMode">
-        <enum>QLineEdit::Password</enum>
-       </property>
-      </widget>
-     </item>
      <item row="3" column="1">
-      <widget class="QComboBox" name="comboTunnel">
+      <widget class="QComboBox" name="comboDefaultTunnel">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -249,6 +104,108 @@
        </item>
       </widget>
      </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="textUserName">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>name</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QComboBox" name="comboExpireTime">
+       <item>
+        <property name="text">
+         <string>永久</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>1 小时</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>4 小时</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>11 小时</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>14 小时</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="8" column="0">
+      <spacer name="verticalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>默认通道</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>默认时长</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="0">
+      <spacer name="verticalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="text">
+        <string>用户名</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QLineEdit" name="textScheduledLoginTime">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>3600</string>
+       </property>
+      </widget>
+     </item>
      <item row="5" column="0">
       <spacer name="verticalSpacer">
        <property name="orientation">
@@ -265,8 +222,46 @@
        </property>
       </spacer>
      </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="textUserName">
+     <item row="9" column="1">
+      <widget class="QCheckBox" name="checkboxEnableRunAtStartup">
+       <property name="text">
+        <string>开机自启</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QLineEdit" name="textScheduledCheckNetTime">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>30</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>密码</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QCheckBox" name="checkboxEnableScheduledCheckNet">
+       <property name="text">
+        <string>定时查询状态（秒）</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QCheckBox" name="checkboxEnableScheduledLogin">
+       <property name="text">
+        <string>定时登陆（秒）</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="textPassword">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -274,55 +269,10 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>name</string>
+        <string>pass</string>
        </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="text">
-        <string>用户名</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
-      <widget class="QCheckBox" name="checkboxTimedCheckNet">
-       <property name="text">
-        <string>定时查询状态（秒）</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>默认通道</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
-      <widget class="QCheckBox" name="checkboxEnableTimedLogIn">
-       <property name="text">
-        <string>定时登陆（秒）</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="1">
-      <widget class="QLineEdit" name="textTimedLogIn">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>3600</string>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="1">
-      <widget class="QCheckBox" name="checkboxEnableRunAtStartup">
-       <property name="text">
-        <string>开机自启</string>
+       <property name="echoMode">
+        <enum>QLineEdit::Password</enum>
        </property>
       </widget>
      </item>
@@ -345,28 +295,77 @@
        </property>
       </widget>
      </item>
-     <item row="8" column="0">
-      <spacer name="verticalSpacer_2">
+    </layout>
+   </item>
+   <item row="5" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QCommandLinkButton" name="buttonHelp">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>130</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>使用说明</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
        <property name="orientation">
-        <enum>Qt::Vertical</enum>
+        <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>20</width>
-         <height>40</height>
+         <width>40</width>
+         <height>20</height>
         </size>
        </property>
       </spacer>
      </item>
-     <item row="10" column="0">
-      <spacer name="verticalSpacer_3">
+     <item>
+      <widget class="QPushButton" name="buttonSet">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>确定</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonClose">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>关闭</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_3">
        <property name="orientation">
-        <enum>Qt::Vertical</enum>
+        <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>20</width>
-         <height>40</height>
+         <width>40</width>
+         <height>20</height>
         </size>
        </property>
       </spacer>
@@ -377,15 +376,13 @@
  </widget>
  <tabstops>
   <tabstop>textUserName</tabstop>
-  <tabstop>textUserPassword</tabstop>
-  <tabstop>buttonSet</tabstop>
-  <tabstop>buttonClose</tabstop>
-  <tabstop>comboTunnel</tabstop>
+  <tabstop>textPassword</tabstop>
+  <tabstop>comboDefaultTunnel</tabstop>
   <tabstop>comboExpireTime</tabstop>
-  <tabstop>checkboxTimedCheckNet</tabstop>
-  <tabstop>textTimedCheckNet</tabstop>
-  <tabstop>checkboxEnableTimedLogIn</tabstop>
-  <tabstop>textTimedLogIn</tabstop>
+  <tabstop>checkboxEnableScheduledCheckNet</tabstop>
+  <tabstop>textScheduledCheckNetTime</tabstop>
+  <tabstop>checkboxEnableScheduledLogin</tabstop>
+  <tabstop>textScheduledLoginTime</tabstop>
   <tabstop>checkboxEnableAutoLogIn</tabstop>
   <tabstop>checkboxEnableRunAtStartup</tabstop>
  </tabstops>
