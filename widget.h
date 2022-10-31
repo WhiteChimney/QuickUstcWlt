@@ -40,9 +40,11 @@ private:
     QString userName, password;
     int defaultTunnel, currentTunnel;
     int expireTimeIndex; QString expireTime;
-    bool enableScheduledCheckNet, enableScheduledLogin;
-    QString scheduledCheckNetTime, scheduledLoginTime;
-    QTimer *scheduledCheckNetTimer, *scheduledLoginTimer;
+    bool enableScheduledCheckNet;
+    QString scheduledCheckNetTime;
+    QTimer *scheduledCheckNetTimer;
+    bool enableScheduledLogin;
+    int scheduledLoginStyle;
     bool enableAutoLogin, enableRunAtStartup;
     NetManager *naManager;
 
@@ -50,6 +52,10 @@ public:
     void setRunAtStartup(bool setEnable);
 public slots:
     void getCurrentTunnel(int tunnel);
+signals:
+    void scheduledCheckNetTunnelReturned(int tunnel);
+public slots:
+    void dealScheduledCheckNetTunnelReturned(int tunnel);
 
 //    系统托盘菜单项
 private:
@@ -90,9 +96,7 @@ private slots:
     void on_buttonSet_clicked();
     void on_buttonClose_clicked();
     void on_buttonHelp_clicked();
-    void on_checkboxEnableScheduledLogin_stateChanged(int);
-    void on_checkboxEnableScheduledCheckNet_stateChanged(int);
+    void on_checkboxEnableScheduledCheckNet_stateChanged(int checkState);
     void on_textScheduledCheckNetTime_editingFinished();
-    void on_textScheduledLoginTime_editingFinished();
 };
 #endif // WIDGET_H

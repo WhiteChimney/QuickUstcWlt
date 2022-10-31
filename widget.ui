@@ -268,20 +268,13 @@
        </property>
       </widget>
      </item>
-     <item row="7" column="1">
-      <widget class="QLineEdit" name="textScheduledLoginTime">
+     <item row="7" column="0">
+      <widget class="QCheckBox" name="checkboxEnableScheduledLogin">
        <property name="enabled">
         <bool>false</bool>
        </property>
        <property name="text">
-        <string>3600</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
-      <widget class="QCheckBox" name="checkboxEnableScheduledLogin">
-       <property name="text">
-        <string>定时登陆（秒）</string>
+        <string>查询后登陆</string>
        </property>
       </widget>
      </item>
@@ -293,6 +286,28 @@
        <property name="text">
         <string>用户名</string>
        </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QComboBox" name="comboboxScheduledLoginStyle">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <item>
+        <property name="text">
+         <string>若为校内权限，则登陆默认通道</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>若为校内权限，则登陆当前通道</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>只要不是默认通道，就登陆默认通道</string>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>
@@ -382,7 +397,6 @@
   <tabstop>checkboxEnableScheduledCheckNet</tabstop>
   <tabstop>textScheduledCheckNetTime</tabstop>
   <tabstop>checkboxEnableScheduledLogin</tabstop>
-  <tabstop>textScheduledLoginTime</tabstop>
   <tabstop>checkboxEnableAutoLogIn</tabstop>
   <tabstop>checkboxEnableRunAtStartup</tabstop>
  </tabstops>

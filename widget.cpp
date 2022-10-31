@@ -10,6 +10,13 @@ Widget::Widget(QWidget *parent)
     this->setWindowTitle(tr("首选项"));
     ui->comboDefaultTunnel->view()->setMinimumWidth(8*ui->comboDefaultTunnel->itemText(0).size());
 
+//    设置任务
+    naManager = new NetManager(this);
+    connect(naManager, &NetManager::returnTunnel, this, &Widget::getCurrentTunnel);
+    scheduledCheckNetTimer = new QTimer(this);
+    connect(scheduledCheckNetTimer, &QTimer::timeout, naManager, [=](){naManager->checkNet();});
+    connect(this, &Widget::scheduledCheckNetTunnelReturned, this, &Widget::dealScheduledCheckNetTunnelReturned);
+
 //    检查是否存在配置文件
     QFileInfo iniInfo(iniName);
     if (iniInfo.isFile())
@@ -20,14 +27,6 @@ Widget::Widget(QWidget *parent)
         on_buttonHelp_clicked();
         saveToIni();     // 否则保存当前配置
     }
-
-//    设置任务
-    naManager = new NetManager(this, userName, password, defaultTunnel, expireTime);
-    connect(naManager, &NetManager::returnTunnel, this, &Widget::getCurrentTunnel);
-    scheduledCheckNetTimer = new QTimer(this);
-    connect(scheduledCheckNetTimer, &QTimer::timeout, naManager, [=](){naManager->checkNet();});
-    scheduledLoginTimer = new QTimer(this);
-    connect(scheduledLoginTimer, &QTimer::timeout, naManager, [=](){naManager->setTunnel(defaultTunnel);});
 
 //    设置托盘菜单目录
     this->setupTrayMenu();
@@ -77,10 +76,7 @@ void Widget::setupTrayMenu()
         actionTunnel = vActionTunnel.at(i);
         menuChangeTunnel->addAction(actionTunnel);
         actionTunnel->setCheckable(true);
-        connect(actionTunnel, &QAction::triggered, this, [=](){
-            currentTunnel = i;
-            naManager->setTunnel(i);
-        });
+        connect(actionTunnel, &QAction::triggered, this, [=](){naManager->setTunnel(i);});
     }
 
     trayMenu->addSeparator();
@@ -149,13 +145,10 @@ void Widget::fetchUiData()
 
     enableScheduledCheckNet = ui->checkboxEnableScheduledCheckNet->isChecked();
     scheduledCheckNetTime = ui->textScheduledCheckNetTime->text();
-
     enableScheduledLogin = ui->checkboxEnableScheduledLogin->isChecked();
-    scheduledLoginTime = ui->textScheduledLoginTime->text();
-
+    scheduledLoginStyle = ui->comboboxScheduledLoginStyle->currentIndex();
     enableAutoLogin = ui->checkboxEnableAutoLogIn->isChecked();
     enableRunAtStartup = ui->checkboxEnableRunAtStartup->isChecked();
-
     pushUiData();
     naManager->updateData(userName, password, defaultTunnel, expireTime);
 }
@@ -164,12 +157,6 @@ void Widget::on_textScheduledCheckNetTime_editingFinished()
 {
     if (ui->textScheduledCheckNetTime->text().toInt() < 3)
         ui->textScheduledCheckNetTime->setText(QString("3"));
-}
-
-void Widget::on_textScheduledLoginTime_editingFinished()
-{
-    if (ui->textScheduledLoginTime->text().toInt() < 10)
-        ui->textScheduledLoginTime->setText(QString("10"));
 }
 
 void Widget::pushUiData()
@@ -184,8 +171,7 @@ void Widget::pushUiData()
     ui->textScheduledCheckNetTime->setEnabled(enableScheduledCheckNet);
 
     ui->checkboxEnableScheduledLogin->setChecked(enableScheduledLogin);
-    ui->textScheduledLoginTime->setText(scheduledLoginTime);
-    ui->textScheduledLoginTime->setEnabled(enableScheduledLogin);
+    ui->comboboxScheduledLoginStyle->setCurrentIndex(scheduledLoginStyle);
 
     ui->checkboxEnableAutoLogIn->setChecked(enableAutoLogin);
     ui->checkboxEnableRunAtStartup->setChecked(enableRunAtStartup);
@@ -203,7 +189,7 @@ void Widget::saveToIni()
     iniSettings->setValue("enableScheduledCheckNet",enableScheduledCheckNet);
     iniSettings->setValue("scheduledCheckNetTime",scheduledCheckNetTime);
     iniSettings->setValue("enableScheduledLogin",enableScheduledLogin);
-    iniSettings->setValue("scheduledLoginTime",scheduledLoginTime);
+    iniSettings->setValue("scheduledLoginStyle",scheduledLoginStyle);
     iniSettings->setValue("enableAutoLogin",enableAutoLogin);
     iniSettings->setValue("enableRunAtStartup",enableRunAtStartup);
     delete iniSettings;
@@ -219,7 +205,7 @@ void Widget::loadFromIni()
     enableScheduledCheckNet = iniSettings->value("enableScheduledCheckNet").toBool();
     scheduledCheckNetTime = iniSettings->value("scheduledCheckNetTime").toString();
     enableScheduledLogin = iniSettings->value("enableScheduledLogin").toBool();
-    scheduledLoginTime = iniSettings->value("scheduledLoginTime").toString();
+    scheduledLoginStyle = iniSettings->value("scheduledLoginStyle").toInt();
     enableAutoLogin = iniSettings->value("enableAutoLogin").toBool();
     enableRunAtStartup = iniSettings->value("enableRunAtStartup").toBool();
     delete iniSettings;
@@ -231,24 +217,23 @@ void Widget::getCurrentTunnel(int m_currentTunnel)
 {
     if (m_currentTunnel >= 0)                                               // 登陆成功
     {
+        currentTunnel = m_currentTunnel;
         if (m_currentTunnel < 9)                                            // 网络通权限正常
         {
-            currentTunnel = m_currentTunnel;
             trayIcon->setIcon(QIcon(QString(":/images/WLT_logo_") + QString::number(currentTunnel) + QString(".png")));
-
+            this->setCheckedTunnel(currentTunnel);
         }
         else                                                               // 网络通权限权限为校内
         {
-            currentTunnel = m_currentTunnel - 1958;
             trayIcon->setIcon(QIcon(QString(":/images/WLT_logo_none.png")));
-
+            this->setCheckedTunnel(currentTunnel-1958);
         }
-        this->setCheckedTunnel(currentTunnel);
+        if (enableScheduledCheckNet and enableScheduledLogin)
+            emit scheduledCheckNetTunnelReturned(currentTunnel);
     }
     else                                                                   // 登陆失败
     {
         scheduledCheckNetTimer->stop();
-        scheduledLoginTimer->stop();
         ui->checkboxEnableScheduledCheckNet->setChecked(false);
         ui->checkboxEnableScheduledLogin->setChecked(false);
         currentTunnel = defaultTunnel;
@@ -270,6 +255,19 @@ void Widget::getCurrentTunnel(int m_currentTunnel)
     }
 }
 
+void Widget::dealScheduledCheckNetTunnelReturned(int m_currentTunnel)
+{
+    if (scheduledLoginStyle == 2 and m_currentTunnel != defaultTunnel)  // 若第 3 种模式，则非默认通道即登陆
+        naManager->setTunnel(defaultTunnel);
+    else if (m_currentTunnel > 8)                                       // 否则校内时才操作
+    {
+        if (scheduledLoginStyle == 0)                                   // 登陆默认通道
+            naManager->setTunnel(defaultTunnel);
+        else
+            naManager->setTunnel(m_currentTunnel-1958);                 // 登陆当前通道
+    }
+}
+
 void Widget::setCheckedTunnel(int checkedTunnel)
 {
     for (int j = 0; j < 9; j++)
@@ -285,7 +283,6 @@ void Widget::setCheckedTunnel(int checkedTunnel)
 void Widget::on_buttonSet_clicked()
 {
     on_textScheduledCheckNetTime_editingFinished();
-    on_textScheduledLoginTime_editingFinished();
 
     this->saveToIni();
 
@@ -293,12 +290,6 @@ void Widget::on_buttonSet_clicked()
         scheduledCheckNetTimer->start(1000*scheduledCheckNetTime.toInt()+0.17);
     else
         scheduledCheckNetTimer->stop();
-
-    if (enableScheduledLogin)
-        scheduledLoginTimer->start(1000*scheduledLoginTime.toInt()+0.59);
-    else
-        scheduledLoginTimer->stop();
-
 
     if (enableRunAtStartup)
         this->setRunAtStartup(true);
@@ -322,20 +313,21 @@ void Widget::on_buttonClose_clicked()
     this->hide();
 }
 
-void Widget::on_checkboxEnableScheduledLogin_stateChanged(int checkState)
-{
-    if (checkState == Qt::Checked)
-        ui->textScheduledLoginTime->setEnabled(true);
-    else
-        ui->textScheduledLoginTime->setEnabled(false);
-}
-
 void Widget::on_checkboxEnableScheduledCheckNet_stateChanged(int checkState)
 {
     if (checkState == Qt::Checked)
+    {
         ui->textScheduledCheckNetTime->setEnabled(true);
+        ui->checkboxEnableScheduledLogin->setEnabled(true);
+        ui->comboboxScheduledLoginStyle->setEnabled(true);
+    }
     else
+    {
         ui->textScheduledCheckNetTime->setEnabled(false);
+        ui->checkboxEnableScheduledLogin->setEnabled(false);
+        ui->checkboxEnableScheduledLogin->setChecked(false);
+        ui->comboboxScheduledLoginStyle->setEnabled(false);
+    }
 }
 
 void Widget::on_buttonHelp_clicked()
@@ -343,16 +335,17 @@ void Widget::on_buttonHelp_clicked()
     QString helpMessage = "";
     helpMessage += tr("这是一个简易的网络通登陆及状态查询软件\n");
     helpMessage += tr("出口状态可以直接通过「系统托盘图标」看到\n\n");
-    helpMessage += tr("第一次使用时会自动弹出首选项界面\n");
+    helpMessage += tr("第一次使用时会自动弹出「首选项」界面\n");
     helpMessage += tr("在该界面设置完「用户名」与「密码」后点击确定即可保存信息\n\n");
-    helpMessage += tr("「定时查询状态」指每隔指定时间就查询一下网络通出口及权限状态\n");
-    helpMessage += tr("「定时登陆」指每隔指定时间就使用默认设置登陆一下网络通\n");
+    helpMessage += tr("「定时查询状态（秒）」指每隔指定时间就查询一下网络通出口及权限状态\n");
+    helpMessage += tr("「查询后登陆」指在查询结束后使用指定模式登陆网络通\n");
     helpMessage += tr("*注意如果间隔时间太短会触发网络通限制\n");
-    helpMessage += tr("*即不能在 2 分钟内进行超过 20 次操作\n\n");
+    helpMessage += tr("*官方指定不能在 2 分钟内进行超过 20 次操作\n\n");
     helpMessage += tr("托盘图标上「左键」可弹出首选项界面\n");
     helpMessage += tr("「中键」可直接查询网络通状态\n");
     helpMessage += tr("「右键」可进行更多操作\n");
-    helpMessage += tr("其中「一键上网」指使用默认设置登陆网络通\n");
+    helpMessage += tr("「macOS 系统」因系统限制只能左键打开菜单\n");
+    helpMessage += tr("「一键上网」指使用默认设置登陆网络通\n");
     QMessageBox::about(this,tr("操作说明"),helpMessage);
 }
 
@@ -402,21 +395,16 @@ void Widget::setRunAtStartup(bool setEnable)
         QFileInfo fileInfo(macOSXAppBundlePath);
         QString macOSXAppBundleName = fileInfo.baseName();
 
-
-        // Remove any existing login entry for this app first, in case there was one
-        // from a previous installation, that may be under a different launch path.
-        {
-            QStringList args;
-            args << "-e tell application \"System Events\" to delete login item\""
-                + macOSXAppBundleName + "\"";
-
-            QProcess::execute("osascript", args);
-        }
-        // Now install the login item, if needed.
         if (setEnable)
         {
             QStringList args;
-            args << "-e tell application \"System Events\" to make login item at end with properties {path:\"" + macOSXAppBundlePath + "\", hidden:false}";
+
+            args << "-e tell application \"System Events\" to delete login item\""
+                + macOSXAppBundleName + "\"";
+            QProcess::execute("osascript", args);
+
+            args << "-e tell application \"System Events\" to make login item at end with properties {path:\""
+                    + macOSXAppBundlePath + "\", hidden:false}";
 
             QProcess::execute("osascript", args);
         }
