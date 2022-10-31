@@ -59,7 +59,12 @@ int NetManager::getCurrentTunnel(QString* answer)
 {
     int currentTunnel = answer->mid(answer->indexOf(QString("状态:<br>\n出口:"))+12,1).toInt()-1;
     if (currentTunnel < 0 or currentTunnel > 8)
-        return -1;
+    {
+        if (answer->mid(answer->indexOf(QString("警告: 最近2分钟内的操作次数超过20,"))+20,5).indexOf("请稍候再试"))
+            return -1;
+        else
+            return -1958;
+    }
     else
         if (answer->mid(answer->indexOf(QString("<br>\n权限"))+9,2).indexOf("校内"))
             return currentTunnel;

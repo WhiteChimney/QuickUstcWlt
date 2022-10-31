@@ -10,6 +10,17 @@ Widget::Widget(QWidget *parent)
     this->setWindowTitle(tr("首选项"));
     ui->comboDefaultTunnel->view()->setMinimumWidth(8*ui->comboDefaultTunnel->itemText(0).size());
 
+//    检查是否存在配置文件
+    QFileInfo iniInfo(iniName);
+    if (iniInfo.isFile())
+        loadFromIni();   // 存在配置则加载
+    else
+    {
+        this->show();
+        on_buttonHelp_clicked();
+        saveToIni();     // 否则保存当前配置
+    }
+
 //    设置任务
     naManager = new NetManager(this, userName, password, defaultTunnel, expireTime);
     connect(naManager, &NetManager::returnTunnel, this, &Widget::getCurrentTunnel);
@@ -28,20 +39,11 @@ Widget::Widget(QWidget *parent)
     connect(trayIcon, &QSystemTrayIcon::activated, this, &Widget::dealTrayIconActivated);
     trayIcon->show();
 
-//    检查是否存在配置文件
-    QFileInfo iniInfo(iniName);
-    if (iniInfo.isFile())
-        loadFromIni();   // 存在配置则加载
-    else
-    {
-        this->show();
-        on_buttonHelp_clicked();
-        saveToIni();     // 否则保存当前配置
-    }
-
 //    启动计划任务
     if (enableAutoLogin)
         on_buttonSet_clicked();
+
+    naManager->updateData(userName, password, defaultTunnel, expireTime);
 }
 
 Widget::~Widget()
@@ -103,14 +105,15 @@ void Widget::setupTrayMenu()
 void Widget::dealTrayIconActivated(QSystemTrayIcon::ActivationReason reason)
 {
     switch (reason) {
-    case QSystemTrayIcon::Trigger:      // windows 左键单击
-        this->show();
+    case QSystemTrayIcon::Trigger:      // 左键单击
+        if (QSysInfo::productType() != "macos")   // macos 下单击无效
+            this->show();
         break;
-    case QSystemTrayIcon::Context:      // windows 右键单击
+    case QSystemTrayIcon::Context:      // 右键单击
         break;
-    case QSystemTrayIcon::DoubleClick:  // windows 左键双击
+    case QSystemTrayIcon::DoubleClick:  // 左键双击
         break;
-    case QSystemTrayIcon::MiddleClick:  // windows 中键单击
+    case QSystemTrayIcon::MiddleClick:  // 中键单击
         naManager->checkNet();
         break;
     default:
@@ -226,33 +229,44 @@ void Widget::loadFromIni()
 
 void Widget::getCurrentTunnel(int m_currentTunnel)
 {
-    if (m_currentTunnel == -1)
+    if (m_currentTunnel >= 0)                                               // 登陆成功
     {
-        currentTunnel = defaultTunnel;
+        if (m_currentTunnel < 9)                                            // 网络通权限正常
+        {
+            currentTunnel = m_currentTunnel;
+            trayIcon->setIcon(QIcon(QString(":/images/WLT_logo_") + QString::number(currentTunnel) + QString(".png")));
+
+        }
+        else                                                               // 网络通权限权限为校内
+        {
+            currentTunnel = m_currentTunnel - 1958;
+            trayIcon->setIcon(QIcon(QString(":/images/WLT_logo_none.png")));
+
+        }
+        this->setCheckedTunnel(currentTunnel);
+    }
+    else                                                                   // 登陆失败
+    {
         scheduledCheckNetTimer->stop();
         scheduledLoginTimer->stop();
         ui->checkboxEnableScheduledCheckNet->setChecked(false);
         ui->checkboxEnableScheduledLogin->setChecked(false);
         currentTunnel = defaultTunnel;
-        QMessageBox::warning(this,
-                               QString("登陆失败"),
-                               QString("请检查用户名与密码"),
-                               QMessageBox::Ok);
+        if (m_currentTunnel == -1)
+        {
+            QMessageBox::warning(this,
+                                   QString("登陆失败"),
+                                   QString("请检查用户名与密码"),
+                                   QMessageBox::Ok);
+        }
+        else                                                               // 操作过于频繁，触发网络通强退
+        {
+            QMessageBox::warning(this,
+                                   QString("登陆失败"),
+                                   QString("短时间内操作太过频繁，请重新登陆"),
+                                   QMessageBox::Ok);
+        }
         this->show();
-    }
-    else
-    {
-        if (m_currentTunnel < 9)
-        {
-            currentTunnel = m_currentTunnel;
-            trayIcon->setIcon(QIcon(QString(":/images/WLT_logo_") + QString::number(currentTunnel) + QString(".png")));
-        }
-        else
-        {
-            currentTunnel = m_currentTunnel - 1958;
-            trayIcon->setIcon(QIcon(QString(":/images/WLT_logo_none.png")));
-        }
-        this->setCheckedTunnel(currentTunnel);
     }
 }
 
@@ -270,6 +284,9 @@ void Widget::setCheckedTunnel(int checkedTunnel)
 
 void Widget::on_buttonSet_clicked()
 {
+    on_textScheduledCheckNetTime_editingFinished();
+    on_textScheduledLoginTime_editingFinished();
+
     this->saveToIni();
 
     if (enableScheduledCheckNet)
@@ -340,33 +357,79 @@ void Widget::on_buttonHelp_clicked()
 }
 
 //设置程序自启动 appPath程序路径
-void Widget::setRunAtStartup(bool setEable)
+void Widget::setRunAtStartup(bool setEnable)
 {
-//    //注册表路径需要使用双反斜杠，如果是32位系统，要使用QSettings::Registry32Format
-//    QSettings settings("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
-//                       QSettings::Registry64Format);
+    if (QSysInfo::productType() == "windows")
+    {
+        //注册表路径需要使用双反斜杠
+        QSettings settings("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                           QSettings::NativeFormat);
 
-//    //以程序名称作为注册表中的键
-//    //根据键获取对应的值（程序路径）
-//    const QString appPath = qApp->applicationFilePath();
-//    QFileInfo fInfo(appPath);
-//    QString name = fInfo.baseName();
-//    QString path = settings.value(name).toString();
+        //以程序名称作为注册表中的键
+        //根据键获取对应的值（程序路径）
+        const QString appPath = qApp->applicationFilePath();
+        QFileInfo fInfo(appPath);
+        QString name = fInfo.baseName();
+        QString path = settings.value(name).toString();
 
-//    //如果注册表中的路径和当前程序路径不一样，
-//    //则表示没有设置自启动或自启动程序已经更换了路径
-//    //toNativeSeparators的意思是将"/"替换为"\"
-//    QString newPath = QDir::toNativeSeparators(appPath);
-//    if (path != newPath)
-//    {
-//        if (setEable)
-//            settings.setValue(name, newPath);
-//    }
-//    else
-//    {
-//        if (!setEable)
-//            settings.remove(name);
-//    }
+        //如果注册表中的路径和当前程序路径不一样，
+        //则表示没有设置自启动或自启动程序已经更换了路径
+        //toNativeSeparators的意思是将"/"替换为"\"
+        QString newPath = QDir::toNativeSeparators(appPath);
+        if (path != newPath)
+        {
+            if (setEnable)
+                settings.setValue(name, newPath);
+        }
+        else
+        {
+            if (!setEnable)
+                settings.remove(name);
+        }
+    }
+    else if (QSysInfo::productType() == "macos")
+    {
+        QDir dir = QDir ( QCoreApplication::applicationDirPath() );
+        dir.cdUp();
+        dir.cdUp();
+        QString macOSXAppBundlePath = dir.absolutePath();
+        // absolutePath will contain a "/" at the end,
+        // but we want the clean path to the .app bundle
+        if ( macOSXAppBundlePath.length() > 0 && macOSXAppBundlePath.right(1) == "/" ) {
+            macOSXAppBundlePath.chop(1);
+        }
+
+        QFileInfo fileInfo(macOSXAppBundlePath);
+        QString macOSXAppBundleName = fileInfo.baseName();
+
+
+        // Remove any existing login entry for this app first, in case there was one
+        // from a previous installation, that may be under a different launch path.
+        {
+            QStringList args;
+            args << "-e tell application \"System Events\" to delete login item\""
+                + macOSXAppBundleName + "\"";
+
+            QProcess::execute("osascript", args);
+        }
+        // Now install the login item, if needed.
+        if (setEnable)
+        {
+            QStringList args;
+            args << "-e tell application \"System Events\" to make login item at end with properties {path:\"" + macOSXAppBundlePath + "\", hidden:false}";
+
+            QProcess::execute("osascript", args);
+        }
+        else
+        {
+            QStringList args;
+            args << "-e tell application \"System Events\" to delete login item\""
+                + macOSXAppBundleName + "\"";
+
+            QProcess::execute("osascript", args);
+        }
+    }
+
 }
 
 QByteArray Widget::passwordEncryption(QByteArray password, int key)

@@ -3,11 +3,13 @@
 
 #include <QWidget>
 
+#include <QSysInfo>
 #include <QSystemTrayIcon>
 #include <QMenu>
 #include <QTimer>
 #include <QMessageBox>
 #include <QListView>
+#include <QProcess>
 
 #include <QStandardPaths>
 #include <QFileInfo>
