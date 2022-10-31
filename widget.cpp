@@ -342,31 +342,31 @@ void Widget::on_buttonHelp_clicked()
 //设置程序自启动 appPath程序路径
 void Widget::setRunAtStartup(bool setEable)
 {
-    //注册表路径需要使用双反斜杠，如果是32位系统，要使用QSettings::Registry32Format
-    QSettings settings("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
-                       QSettings::Registry64Format);
+//    //注册表路径需要使用双反斜杠，如果是32位系统，要使用QSettings::Registry32Format
+//    QSettings settings("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+//                       QSettings::Registry64Format);
 
-    //以程序名称作为注册表中的键
-    //根据键获取对应的值（程序路径）
-    const QString appPath = qApp->applicationFilePath();
-    QFileInfo fInfo(appPath);
-    QString name = fInfo.baseName();
-    QString path = settings.value(name).toString();
+//    //以程序名称作为注册表中的键
+//    //根据键获取对应的值（程序路径）
+//    const QString appPath = qApp->applicationFilePath();
+//    QFileInfo fInfo(appPath);
+//    QString name = fInfo.baseName();
+//    QString path = settings.value(name).toString();
 
-    //如果注册表中的路径和当前程序路径不一样，
-    //则表示没有设置自启动或自启动程序已经更换了路径
-    //toNativeSeparators的意思是将"/"替换为"\"
-    QString newPath = QDir::toNativeSeparators(appPath);
-    if (path != newPath)
-    {
-        if (setEable)
-            settings.setValue(name, newPath);
-    }
-    else
-    {
-        if (!setEable)
-            settings.remove(name);
-    }
+//    //如果注册表中的路径和当前程序路径不一样，
+//    //则表示没有设置自启动或自启动程序已经更换了路径
+//    //toNativeSeparators的意思是将"/"替换为"\"
+//    QString newPath = QDir::toNativeSeparators(appPath);
+//    if (path != newPath)
+//    {
+//        if (setEable)
+//            settings.setValue(name, newPath);
+//    }
+//    else
+//    {
+//        if (!setEable)
+//            settings.remove(name);
+//    }
 }
 
 QByteArray Widget::passwordEncryption(QByteArray password, int key)
