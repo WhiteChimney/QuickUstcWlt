@@ -1,5 +1,5 @@
 # QuickUstcWlt
-一个用 Qt 写的快捷登陆 USTC 网络通的 UI 应用，支持 Windows 与 macOS
+一个用 Qt 写的快捷登陆 USTC 网络通的 GUI 应用，支持 Windows 与 macOS
 
 * 系统托盘可直接查看当前网络状态（角标数字即为通道）
 
