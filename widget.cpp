@@ -8,7 +8,8 @@ Widget::Widget(QWidget *parent)
 //    设置 UI
     ui->setupUi(this);
     this->setWindowTitle(tr("首选项"));
-    ui->comboDefaultTunnel->view()->setMinimumWidth(8*ui->comboDefaultTunnel->itemText(0).size());
+    ui->comboDefaultTunnel->view()->setMinimumWidth(370);
+    ui->comboboxScheduledLoginStyle->view()->setMinimumWidth(200);
 
 //    设置任务
     naManager = new NetManager(this);
