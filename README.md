@@ -5,7 +5,7 @@
 
 * 可设置定时查询与定时登陆功能，时刻联网
 
-P.S. 用 Qt 6.2.4 写的，封装出来文件比较大，实际工程很小
+P.S. 用 Qt 6.2.4 写的，windeployqt / macdeployqt 直接打包，未精简依赖，封装出来文件比较大，实际工程很小
 
 ### Windows 效果图
 <img width="946" alt="Xnip2022-11-01_13-43-35" src="https://user-images.githubusercontent.com/44578389/199166998-4f807d26-8756-4f27-9c79-e7bbe9f2bbec.png">
