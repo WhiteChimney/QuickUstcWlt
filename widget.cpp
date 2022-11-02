@@ -7,16 +7,26 @@ Widget::Widget(QWidget *parent)
 {
 //    设置 UI
     ui->setupUi(this);
-    this->setWindowTitle(tr("首选项"));
-    ui->comboDefaultTunnel->view()->setMinimumWidth(370);
-    ui->comboboxScheduledLoginStyle->view()->setMinimumWidth(200);
+    this->setupUI();
+
 
 //    设置任务
     naManager = new NetManager(this);
     connect(naManager, &NetManager::returnTunnel, this, &Widget::getCurrentTunnel);
+    connect(naManager, &NetManager::sendAnswer, this, &Widget::displayAnswer);
     scheduledCheckNetTimer = new QTimer(this);
-    connect(scheduledCheckNetTimer, &QTimer::timeout, naManager, [=](){naManager->checkNet();});
+    connect(scheduledCheckNetTimer, &QTimer::timeout, naManager, [=](){
+        if (ui->checkBoxScheduledTimeRange->isChecked())
+        {
+            if (vCheckboxWeek.at(currentDate->currentDate().dayOfWeek()-1)->isChecked()
+                    and currentTime->currentTime() > ui->timeStartTask->time()
+                    and currentTime->currentTime() < ui->timeEndTask->time())
+                naManager->checkNet();
+        }
+    });
     connect(this, &Widget::scheduledCheckNetTunnelReturned, this, &Widget::dealScheduledCheckNetTunnelReturned);
+    currentDate = new QDate();
+    currentTime = new QTime();
 
 //    检查是否存在配置文件
     QFileInfo iniInfo(iniName);
@@ -49,6 +59,37 @@ Widget::Widget(QWidget *parent)
 Widget::~Widget()
 {
     delete ui;
+}
+
+void Widget::setupUI()
+{
+    this->setWindowTitle(tr("首选项"));
+    ui->comboDefaultTunnel->view()->setMinimumWidth(370);
+    ui->comboboxScheduledLoginStyle->view()->setMinimumWidth(200);
+    for (int i = 0; i < 7; i++)
+    {
+        QCheckBox *checkBoxWeek = new QCheckBox(this);
+        vCheckboxWeek.append(checkBoxWeek);
+        ui->vLayoutWeek->insertWidget(i,checkBoxWeek);
+    }
+    vCheckboxWeek.at(0)->setText(tr("周一"));
+    vCheckboxWeek.at(1)->setText(tr("周二"));
+    vCheckboxWeek.at(2)->setText(tr("周三"));
+    vCheckboxWeek.at(3)->setText(tr("周四"));
+    vCheckboxWeek.at(4)->setText(tr("周五"));
+    vCheckboxWeek.at(5)->setText(tr("周六"));
+    vCheckboxWeek.at(6)->setText(tr("周日"));
+    ui->timeStartTask->setTime(ui->timeStartTask->minimumTime());
+    ui->timeEndTask->setTime(ui->timeEndTask->maximumTime());
+    ui->tabWidget->setCurrentIndex(0);
+}
+
+void Widget::displayAnswer(QString *answer)
+{
+    QMessageBox::warning(this,
+                           QString("登陆失败"),
+                           QString(*answer),
+                           QMessageBox::Ok);
 }
 
 void Widget::setupTrayMenu()
@@ -193,6 +234,16 @@ void Widget::saveToIni()
     iniSettings->setValue("scheduledLoginStyle",scheduledLoginStyle);
     iniSettings->setValue("enableAutoLogin",enableAutoLogin);
     iniSettings->setValue("enableRunAtStartup",enableRunAtStartup);
+    iniSettings->setValue("enableTimeRange",ui->checkBoxScheduledTimeRange->isChecked());
+    iniSettings->setValue("enableMonday",vCheckboxWeek.at(0)->isChecked());
+    iniSettings->setValue("enableTuesday",vCheckboxWeek.at(1)->isChecked());
+    iniSettings->setValue("enableWednesday",vCheckboxWeek.at(2)->isChecked());
+    iniSettings->setValue("enableThursday",vCheckboxWeek.at(3)->isChecked());
+    iniSettings->setValue("enableFriday",vCheckboxWeek.at(4)->isChecked());
+    iniSettings->setValue("enableSaturday",vCheckboxWeek.at(5)->isChecked());
+    iniSettings->setValue("enableSunday",vCheckboxWeek.at(6)->isChecked());
+    iniSettings->setValue("timeStartTask",ui->timeStartTask->time());
+    iniSettings->setValue("timeEndTask",ui->timeEndTask->time());
     delete iniSettings;
 }
 
@@ -209,6 +260,17 @@ void Widget::loadFromIni()
     scheduledLoginStyle = iniSettings->value("scheduledLoginStyle").toInt();
     enableAutoLogin = iniSettings->value("enableAutoLogin").toBool();
     enableRunAtStartup = iniSettings->value("enableRunAtStartup").toBool();
+
+    ui->checkBoxScheduledTimeRange->setChecked(iniSettings->value("enableTimeRange").toBool());
+    vCheckboxWeek.at(0)->setChecked(iniSettings->value("enableMonday").toBool());
+    vCheckboxWeek.at(1)->setChecked(iniSettings->value("enableTuesday").toBool());
+    vCheckboxWeek.at(2)->setChecked(iniSettings->value("enableWednesday").toBool());
+    vCheckboxWeek.at(3)->setChecked(iniSettings->value("enableThursday").toBool());
+    vCheckboxWeek.at(4)->setChecked(iniSettings->value("enableFriday").toBool());
+    vCheckboxWeek.at(5)->setChecked(iniSettings->value("enableSaturday").toBool());
+    vCheckboxWeek.at(6)->setChecked(iniSettings->value("enableSunday").toBool());
+    ui->timeStartTask->setTime(iniSettings->value("timeStartTask").toTime());
+    ui->timeEndTask->setTime(iniSettings->value("timeEndTask").toTime());
     delete iniSettings;
 
     pushUiData();
@@ -247,10 +309,10 @@ void Widget::getCurrentTunnel(int m_currentTunnel)
         }
         else                                                               // 操作过于频繁，触发网络通强退
         {
-            QMessageBox::warning(this,
-                                   QString("登陆失败"),
-                                   QString("短时间内操作太过频繁，请重新登陆"),
-                                   QMessageBox::Ok);
+//            QMessageBox::warning(this,
+//                                   QString("登陆失败"),
+//                                   QString("短时间内操作太过频繁，请重新登陆"),
+//                                   QMessageBox::Ok);
         }
         this->show();
     }
@@ -258,7 +320,7 @@ void Widget::getCurrentTunnel(int m_currentTunnel)
 
 void Widget::dealScheduledCheckNetTunnelReturned(int m_currentTunnel)
 {
-    if (scheduledLoginStyle == 2 and m_currentTunnel != defaultTunnel)  // 若第 3 种模式，则非默认通道即登陆
+    if (scheduledLoginStyle == 2 and m_currentTunnel != defaultTunnel)  // 第 3 种模式，非默认通道即登陆
         naManager->setTunnel(defaultTunnel);
     else if (m_currentTunnel > 8)                                       // 否则校内时才操作
     {
@@ -278,7 +340,26 @@ void Widget::setCheckedTunnel(int checkedTunnel)
         else
             vActionTunnel.at(j)->setChecked(false);
     }
+}
 
+void Widget::setScheduledCheckNet()
+{
+    if (enableScheduledCheckNet)
+    {
+        if (ui->checkBoxScheduledTimeRange->isChecked())
+        {
+            if (vCheckboxWeek.at(currentDate->currentDate().dayOfWeek()-1)->isChecked()
+                    and currentTime->currentTime() > ui->timeStartTask->time()
+                    and currentTime->currentTime() < ui->timeEndTask->time())
+                    scheduledCheckNetTimer->start(1000*scheduledCheckNetTime.toInt()+0.17);
+            else
+                scheduledCheckNetTimer->stop();
+        }
+        else
+            scheduledCheckNetTimer->start(1000*scheduledCheckNetTime.toInt()+0.17);
+    }
+    else
+        scheduledCheckNetTimer->stop();
 }
 
 void Widget::on_buttonSet_clicked()
@@ -287,10 +368,7 @@ void Widget::on_buttonSet_clicked()
 
     this->saveToIni();
 
-    if (enableScheduledCheckNet)
-        scheduledCheckNetTimer->start(1000*scheduledCheckNetTime.toInt()+0.17);
-    else
-        scheduledCheckNetTimer->stop();
+    this->setScheduledCheckNet();
 
     if (enableRunAtStartup)
         this->setRunAtStartup(true);
@@ -320,16 +398,53 @@ void Widget::on_checkboxEnableScheduledCheckNet_stateChanged(int checkState)
     {
         ui->textScheduledCheckNetTime->setEnabled(true);
         ui->checkboxEnableScheduledLogin->setEnabled(true);
-        ui->comboboxScheduledLoginStyle->setEnabled(true);
+        ui->checkBoxScheduledTimeRange->setEnabled(true);
     }
     else
     {
         ui->textScheduledCheckNetTime->setEnabled(false);
         ui->checkboxEnableScheduledLogin->setEnabled(false);
         ui->checkboxEnableScheduledLogin->setChecked(false);
+        ui->checkBoxScheduledTimeRange->setEnabled(false);
+        ui->checkBoxScheduledTimeRange->setChecked(false);
+    }
+}
+
+void Widget::on_checkboxEnableScheduledLogin_stateChanged(int checkState)
+{
+    if (checkState == Qt::Checked)
+    {
+        ui->comboboxScheduledLoginStyle->setEnabled(true);
+    }
+    else
+    {
         ui->comboboxScheduledLoginStyle->setEnabled(false);
     }
 }
+
+
+void Widget::on_checkBoxScheduledTimeRange_stateChanged(int checkState)
+{
+    if (checkState == Qt::Checked)
+    {
+        ui->groupboxTimeRange->setEnabled(true);
+    }
+    else
+    {
+        ui->groupboxTimeRange->setEnabled(false);
+    }
+}
+
+
+void Widget::on_timeStartTask_userTimeChanged(const QTime &time)
+{
+    if (ui->timeEndTask->time() < time)
+    {
+        ui->timeEndTask->setTime(time);
+        ui->timeEndTask->setTimeRange(time,ui->timeEndTask->maximumTime());
+    }
+}
+
 
 void Widget::on_buttonHelp_clicked()
 {
@@ -434,3 +549,5 @@ QByteArray Widget::passwordDecryption(QByteArray password, int key)
         password[i] -= key;
     return password;
 }
+
+

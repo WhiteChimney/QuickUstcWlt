@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>335</width>
-    <height>312</height>
+    <height>365</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -32,287 +32,7 @@
    <string>Widget</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0">
-    <layout class="QGridLayout" name="gridLayout_2">
-     <item row="6" column="0">
-      <widget class="QCheckBox" name="checkboxEnableScheduledCheckNet">
-       <property name="text">
-        <string>定时查询状态（秒）</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <spacer name="verticalSpacer">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Preferred</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="9" column="0">
-      <widget class="QCheckBox" name="checkboxEnableAutoLogIn">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>启动时自动登陆</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QComboBox" name="comboExpireTime">
-       <item>
-        <property name="text">
-         <string>永久</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>1 小时</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>4 小时</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>11 小时</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>14 小时</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="textUserName">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>name</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QComboBox" name="comboDefaultTunnel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>10</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>200</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="sizeAdjustPolicy">
-        <enum>QComboBox::AdjustToContents</enum>
-       </property>
-       <item>
-        <property name="text">
-         <string>1 教育网出口                     （国际，仅用教育网访问，适合看文献）</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>2 电信网出口                     （国际，到教育网走教育网）</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>3 联通网出口                     （国际，到教育网走教育网）</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>4 电信网出口 2                  （国际，到教育网免费地址走教育网）</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>5 联通网出口 2                  （国际，到教育网免费地址走教育网）</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>6 电信网出口 3                  （国际，默认电信，其他分流）</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>7 联通网出口 3                  （国际，默认联通，其他分流）</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>8 教育网出口 2                  （国际，默认教育网，其他分流）</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>9 移动网出口                     （国际，无P2P或带宽限制）</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>密码</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>默认通道</string>
-       </property>
-      </widget>
-     </item>
-     <item row="10" column="0">
-      <spacer name="verticalSpacer_3">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="8" column="0">
-      <spacer name="verticalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="textPassword">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>pass</string>
-       </property>
-       <property name="echoMode">
-        <enum>QLineEdit::Password</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>默认时长</string>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="1">
-      <widget class="QCheckBox" name="checkboxEnableRunAtStartup">
-       <property name="text">
-        <string>开机自启</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QLineEdit" name="textScheduledCheckNetTime">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>30</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
-      <widget class="QCheckBox" name="checkboxEnableScheduledLogin">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>查询后登陆</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="text">
-        <string>用户名</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="1">
-      <widget class="QComboBox" name="comboboxScheduledLoginStyle">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <item>
-        <property name="text">
-         <string>若为校内权限，则登陆默认通道</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>若为校内权限，则登陆当前通道</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>只要不是默认通道，就登陆默认通道</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="5" column="0">
+   <item row="4" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QCommandLinkButton" name="buttonHelp">
@@ -387,19 +107,360 @@
      </item>
     </layout>
    </item>
+   <item row="1" column="0">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <widget class="QWidget" name="tabLoginInfo">
+      <attribute name="title">
+       <string>登陆信息</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label">
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>用户名</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="textUserName">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>name</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>密码</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="textPassword">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>pass</string>
+         </property>
+         <property name="echoMode">
+          <enum>QLineEdit::Password</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>默认通道</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QComboBox" name="comboDefaultTunnel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>10</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="sizeAdjustPolicy">
+          <enum>QComboBox::AdjustToContents</enum>
+         </property>
+         <item>
+          <property name="text">
+           <string>1 教育网出口                     （国际，仅用教育网访问，适合看文献）</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>2 电信网出口                     （国际，到教育网走教育网）</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>3 联通网出口                     （国际，到教育网走教育网）</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>4 电信网出口 2                  （国际，到教育网免费地址走教育网）</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>5 联通网出口 2                  （国际，到教育网免费地址走教育网）</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>6 电信网出口 3                  （国际，默认电信，其他分流）</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>7 联通网出口 3                  （国际，默认联通，其他分流）</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>8 教育网出口 2                  （国际，默认教育网，其他分流）</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>9 移动网出口                     （国际，无P2P或带宽限制）</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>默认时长</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QComboBox" name="comboExpireTime">
+         <item>
+          <property name="text">
+           <string>永久</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>1 小时</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>4 小时</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>11 小时</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>14 小时</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabAutomation">
+      <attribute name="title">
+       <string>计划任务</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0" colspan="4">
+        <widget class="QScrollArea" name="scrollArea">
+         <property name="horizontalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOff</enum>
+         </property>
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="scrollAreaWidgetContents">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>-46</y>
+            <width>299</width>
+            <height>282</height>
+           </rect>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="6" column="0">
+            <widget class="QGroupBox" name="groupboxTimeRange">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="title">
+              <string/>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <item>
+               <layout class="QVBoxLayout" name="vLayoutWeek"/>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="vLayoutTime">
+                <item>
+                 <widget class="QLabel" name="label_5">
+                  <property name="text">
+                   <string>开始时间</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QTimeEdit" name="timeStartTask">
+                  <property name="displayFormat">
+                   <string>HH:mm:ss</string>
+                  </property>
+                  <property name="time">
+                   <time>
+                    <hour>16</hour>
+                    <minute>0</minute>
+                    <second>0</second>
+                   </time>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_6">
+                  <property name="text">
+                   <string>结束时间</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QTimeEdit" name="timeEndTask">
+                  <property name="displayFormat">
+                   <string>HH:mm:ss</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QCheckBox" name="checkBoxScheduledTimeRange">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>仅在以下时间段进行</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" colspan="2">
+            <widget class="QCheckBox" name="checkboxEnableScheduledLogin">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>查询后登陆</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QCheckBox" name="checkboxEnableScheduledCheckNet">
+               <property name="text">
+                <string>定时查询状态（秒）</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="textScheduledCheckNetTime">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="text">
+                <string>30</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="3" column="0">
+            <widget class="QComboBox" name="comboboxScheduledLoginStyle">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <item>
+              <property name="text">
+               <string>若为校内权限，则登陆默认通道</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>若为校内权限，则登陆当前通道</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>只要不是默认通道，就登陆默认通道</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabOthers">
+      <attribute name="title">
+       <string>其他</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QCheckBox" name="checkboxEnableAutoLogIn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>启动时执行一键上网</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkboxEnableRunAtStartup">
+         <property name="text">
+          <string>开机启动本程序</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
   </layout>
  </widget>
- <tabstops>
-  <tabstop>textUserName</tabstop>
-  <tabstop>textPassword</tabstop>
-  <tabstop>comboDefaultTunnel</tabstop>
-  <tabstop>comboExpireTime</tabstop>
-  <tabstop>checkboxEnableScheduledCheckNet</tabstop>
-  <tabstop>textScheduledCheckNetTime</tabstop>
-  <tabstop>checkboxEnableScheduledLogin</tabstop>
-  <tabstop>checkboxEnableAutoLogIn</tabstop>
-  <tabstop>checkboxEnableRunAtStartup</tabstop>
- </tabstops>
  <resources/>
  <connections/>
 </ui>

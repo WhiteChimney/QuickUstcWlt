@@ -29,7 +29,8 @@ protected slots:
     void dealLoginWlt(QNetworkReply*);
 
 signals:
-    int returnTunnel(int currentTunnel);
+    void returnTunnel(int currentTunnel);
+    void sendAnswer(QString *answer);
 
 private:
     QNetworkAccessManager *loginManager, *logoutManager, *setManager;

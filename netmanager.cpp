@@ -61,7 +61,10 @@ int NetManager::getCurrentTunnel(QString* answer)
     if (currentTunnel < 0 or currentTunnel > 8)
     {
         if (answer->mid(answer->indexOf(QString("警告: 最近2分钟内的操作次数超过20,"))+20,5).indexOf("请稍候再试"))
+        {
+            emit sendAnswer(answer);
             return -1;
+        }
         else
             return -1958;
     }

@@ -34,6 +34,7 @@ public:
 
 private:
     Ui::Widget *ui;
+    void setupUI();
 
 //    网络通首选项
 private:
@@ -50,8 +51,10 @@ private:
 
 public:
     void setRunAtStartup(bool setEnable);
+    void setScheduledCheckNet();
 public slots:
     void getCurrentTunnel(int tunnel);
+    void displayAnswer(QString *answer);
 signals:
     void scheduledCheckNetTunnelReturned(int tunnel);
 public slots:
@@ -68,6 +71,10 @@ private:
     QAction *actionLogOut;
     QAction *actionShowPref;
     QAction *actionExit;
+
+    QVector<QCheckBox*> vCheckboxWeek;
+    QDate *currentDate;
+    QTime *currentTime;
 
 public:
     void setupTrayMenu();
@@ -98,5 +105,8 @@ private slots:
     void on_buttonHelp_clicked();
     void on_checkboxEnableScheduledCheckNet_stateChanged(int checkState);
     void on_textScheduledCheckNetTime_editingFinished();
+    void on_checkboxEnableScheduledLogin_stateChanged(int checkState);
+    void on_checkBoxScheduledTimeRange_stateChanged(int checkState);
+    void on_timeStartTask_userTimeChanged(const QTime &time);
 };
 #endif // WIDGET_H
