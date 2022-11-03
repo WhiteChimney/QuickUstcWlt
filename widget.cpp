@@ -373,11 +373,6 @@ void Widget::on_buttonSet_clicked()
     else
         scheduledCheckNetTimer->stop();
 
-    if (enableRunAtStartup)
-        this->setRunAtStartup(true);
-    else
-        this->setRunAtStartup(false);
-
     ui->buttonSet->setText(tr("确定 √"));
     QTimer* tempTimer = new QTimer(this);
     connect(tempTimer, &QTimer::timeout, this, [=](){
@@ -504,8 +499,8 @@ void Widget::setRunAtStartup(bool setEnable)
         {
             QStringList args;
 
-            args << "-e tell application \"System Events\" to delete login item\""
-                + macOSXAppBundleName + "\"";
+            args << "-e tell application \"System Events\" to delete (every login item whose name is \""
+                + macOSXAppBundleName + "\")";
             QProcess::execute("osascript", args);
 
             args << "-e tell application \"System Events\" to make login item at end with properties {path:\""
@@ -516,8 +511,8 @@ void Widget::setRunAtStartup(bool setEnable)
         else
         {
             QStringList args;
-            args << "-e tell application \"System Events\" to delete login item\""
-                + macOSXAppBundleName + "\"";
+            args << "-e tell application \"System Events\" to delete (every login item whose name is \""
+                + macOSXAppBundleName + "\")";
 
             QProcess::execute("osascript", args);
         }
@@ -543,6 +538,16 @@ QByteArray Widget::passwordDecryption(QByteArray password, int key)
 
 void Widget::on_buttonIniPath_clicked()
 {
-    qDebug() << QDesktopServices::openUrl(QUrl::fromLocalFile(iniPath));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(iniPath));
+}
+
+
+void Widget::on_checkboxEnableRunAtStartup_stateChanged(int checkState)
+{
+    if (checkState == Qt::Checked)
+        this->setRunAtStartup(true);
+    else
+        this->setRunAtStartup(false);
+
 }
 

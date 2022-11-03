@@ -109,5 +109,6 @@ private slots:
     void on_checkBoxScheduledTimeRange_stateChanged(int checkState);
     void on_timeStartTask_userTimeChanged(const QTime &time);
     void on_buttonIniPath_clicked();
+    void on_checkboxEnableRunAtStartup_stateChanged(int checkState);
 };
 #endif // WIDGET_H
