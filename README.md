@@ -7,14 +7,10 @@
 
 P.S. 用 Qt 6.2.4 写的，windeployqt / macdeployqt 直接打包，未精简依赖，封装出来文件比较大，实际工程很小
 
-### Windows 效果图
-<img width="946" alt="Xnip2022-11-01_13-43-35" src="https://user-images.githubusercontent.com/44578389/199166998-4f807d26-8756-4f27-9c79-e7bbe9f2bbec.png">
-
-<img width="427" alt="Xnip2022-11-01_13-43-52" src="https://user-images.githubusercontent.com/44578389/199167005-1e680764-9377-4e4d-a0b4-4bc4f27298d2.png">
-
-<img width="448" alt="Xnip2022-11-01_11-47-32" src="https://user-images.githubusercontent.com/44578389/199154601-05df3e28-b404-462c-8a16-46a7819c9c10.png">
-
 ### macOS 效果图
-<img width="447" alt="Xnip2022-11-01_12-05-03" src="https://user-images.githubusercontent.com/44578389/199167180-e74937a3-0d84-440c-8d7a-261de56bb9a2.png">
 
-<img width="354" alt="Xnip2022-11-01_13-28-14" src="https://user-images.githubusercontent.com/44578389/199167202-91f83682-8886-4eab-8149-0001dc50ca33.png">
+![icon_1024x1024](https://user-images.githubusercontent.com/44578389/199738559-7320a383-cbc8-4b6e-b599-b15ca081afd7.png)
+
+### Windows 效果图
+
+![icon_1024x1024 2](https://user-images.githubusercontent.com/44578389/199740750-06fa3eee-fcb2-4ee2-b9fb-c52064edbd8e.png)
