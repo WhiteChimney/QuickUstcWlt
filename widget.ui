@@ -110,7 +110,7 @@
    <item row="1" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tabLoginInfo">
       <attribute name="title">
@@ -295,7 +295,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-46</y>
+            <y>0</y>
             <width>299</width>
             <height>282</height>
            </rect>
@@ -428,7 +428,7 @@
       <attribute name="title">
        <string>其他</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <layout class="QVBoxLayout" name="vLayoutOthers">
        <item>
         <widget class="QCheckBox" name="checkboxEnableAutoLogIn">
          <property name="sizePolicy">

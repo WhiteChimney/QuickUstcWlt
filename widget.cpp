@@ -13,7 +13,6 @@ Widget::Widget(QWidget *parent)
 //    设置任务
     naManager = new NetManager(this);
     connect(naManager, &NetManager::returnTunnel, this, &Widget::getCurrentTunnel);
-    connect(naManager, &NetManager::sendAnswer, this, &Widget::displayAnswer);
     scheduledCheckNetTimer = new QTimer(this);
     connect(scheduledCheckNetTimer, &QTimer::timeout, naManager, [=](){
         if (ui->checkBoxScheduledTimeRange->isChecked())
@@ -82,15 +81,16 @@ void Widget::setupUI()
     ui->timeStartTask->setTime(ui->timeStartTask->minimumTime());
     ui->timeEndTask->setTime(ui->timeEndTask->maximumTime());
     ui->tabWidget->setCurrentIndex(0);
+
+    msgboxLoginFailed = new QMessageBox(this);
+    msgboxLoginFailed->setIcon(QMessageBox::Warning);
+    msgboxLoginFailed->setText(tr("登陆失败"));
+    msgboxLoginFailed->setStandardButtons(QMessageBox::Help | QMessageBox::Yes);
+    msgboxLoginFailed->button(QMessageBox::Help)->setText(tr("详细信息"));
+    msgboxLoginFailed->button(QMessageBox::Yes)->setText(tr("确认"));
+    msgboxLoginFailed->setDefaultButton(QMessageBox::Yes);
 }
 
-void Widget::displayAnswer(QString *answer)
-{
-    QMessageBox::warning(this,
-                           QString("登陆失败"),
-                           QString(*answer),
-                           QMessageBox::Ok);
-}
 
 void Widget::setupTrayMenu()
 {
@@ -300,20 +300,10 @@ void Widget::getCurrentTunnel(int m_currentTunnel)
         ui->checkboxEnableScheduledCheckNet->setChecked(false);
         ui->checkboxEnableScheduledLogin->setChecked(false);
         currentTunnel = defaultTunnel;
-        if (m_currentTunnel == -1)
-        {
-            QMessageBox::warning(this,
-                                   QString("登陆失败"),
-                                   QString("请检查用户名与密码"),
-                                   QMessageBox::Ok);
-        }
-        else                                                               // 操作过于频繁，触发网络通强退
-        {
-//            QMessageBox::warning(this,
-//                                   QString("登陆失败"),
-//                                   QString("短时间内操作太过频繁，请重新登陆"),
-//                                   QMessageBox::Ok);
-        }
+
+        if (msgboxLoginFailed->exec() == QMessageBox::Help)
+            naManager->displayAnswer();
+
         this->show();
     }
 }
@@ -342,33 +332,16 @@ void Widget::setCheckedTunnel(int checkedTunnel)
     }
 }
 
-void Widget::setScheduledCheckNet()
-{
-    if (enableScheduledCheckNet)
-    {
-        if (ui->checkBoxScheduledTimeRange->isChecked())
-        {
-            if (vCheckboxWeek.at(currentDate->currentDate().dayOfWeek()-1)->isChecked()
-                    and currentTime->currentTime() > ui->timeStartTask->time()
-                    and currentTime->currentTime() < ui->timeEndTask->time())
-                    scheduledCheckNetTimer->start(1000*scheduledCheckNetTime.toInt()+0.17);
-            else
-                scheduledCheckNetTimer->stop();
-        }
-        else
-            scheduledCheckNetTimer->start(1000*scheduledCheckNetTime.toInt()+0.17);
-    }
-    else
-        scheduledCheckNetTimer->stop();
-}
-
 void Widget::on_buttonSet_clicked()
 {
     on_textScheduledCheckNetTime_editingFinished();
 
     this->saveToIni();
 
-    this->setScheduledCheckNet();
+    if (enableScheduledCheckNet)
+        scheduledCheckNetTimer->start(1000*scheduledCheckNetTime.toInt()+0.17);
+    else
+        scheduledCheckNetTimer->stop();
 
     if (enableRunAtStartup)
         this->setRunAtStartup(true);

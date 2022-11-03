@@ -12,6 +12,15 @@ NetManager::NetManager
     connect(logoutManager, &QNetworkAccessManager::finished, this, [=](){this->checkNet();});
     setManager = new QNetworkAccessManager(this);
     connect(setManager, &QNetworkAccessManager::finished, this, &NetManager::dealLoginWlt);
+
+    fAnswer = new QFile();
+    fAnswer->setFileName(tmpFileName);
+    fStream.setDevice(fAnswer);
+}
+
+NetManager::~NetManager()
+{
+    delete fAnswer;
 }
 
 void NetManager::updateData
@@ -50,9 +59,17 @@ void NetManager::setTunnel(int tunnel)
 
 void NetManager::dealLoginWlt(QNetworkReply* nReply)
 {
-    QString answer = gb_code->toUnicode(nReply->readAll());
+    answer = gb_code->toUnicode(nReply->readAll());
     tunnel = this->getCurrentTunnel(&answer);
     emit returnTunnel(tunnel);
+}
+
+void NetManager::displayAnswer()
+{
+    fAnswer->open(QIODevice::WriteOnly | QIODevice::Truncate);
+    fStream << answer.replace("gb2312","utf-8");
+    fAnswer->close();
+    qDebug() << QDesktopServices::openUrl(QUrl("file://"+tmpFileName));
 }
 
 int NetManager::getCurrentTunnel(QString* answer)
@@ -61,10 +78,7 @@ int NetManager::getCurrentTunnel(QString* answer)
     if (currentTunnel < 0 or currentTunnel > 8)
     {
         if (answer->mid(answer->indexOf(QString("警告: 最近2分钟内的操作次数超过20,"))+20,5).indexOf("请稍候再试"))
-        {
-            emit sendAnswer(answer);
             return -1;
-        }
         else
             return -1958;
     }

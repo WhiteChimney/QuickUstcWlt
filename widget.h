@@ -10,6 +10,7 @@
 #include <QMessageBox>
 #include <QListView>
 #include <QProcess>
+#include <QDesktopServices>
 
 #include <QStandardPaths>
 #include <QFileInfo>
@@ -47,14 +48,16 @@ private:
     bool enableScheduledLogin;
     int scheduledLoginStyle;
     bool enableAutoLogin, enableRunAtStartup;
+    QVector<QCheckBox*> vCheckboxWeek;
+    QDate *currentDate;
+    QTime *currentTime;
     NetManager *naManager;
+    QMessageBox *msgboxLoginFailed;
 
 public:
     void setRunAtStartup(bool setEnable);
-    void setScheduledCheckNet();
 public slots:
     void getCurrentTunnel(int tunnel);
-    void displayAnswer(QString *answer);
 signals:
     void scheduledCheckNetTunnelReturned(int tunnel);
 public slots:
@@ -71,10 +74,6 @@ private:
     QAction *actionLogOut;
     QAction *actionShowPref;
     QAction *actionExit;
-
-    QVector<QCheckBox*> vCheckboxWeek;
-    QDate *currentDate;
-    QTime *currentTime;
 
 public:
     void setupTrayMenu();
