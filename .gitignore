@@ -57,6 +57,7 @@ compile_commands.json
 .DS_Store
 **/.DS_Store
 .DS_Store?
+*.dmgCanvas
 
 # others
 openQtProject.bat
