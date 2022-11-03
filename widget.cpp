@@ -543,6 +543,6 @@ QByteArray Widget::passwordDecryption(QByteArray password, int key)
 
 void Widget::on_buttonIniPath_clicked()
 {
-    qDebug() << QDesktopServices::openUrl(QUrl(iniPath));
+    qDebug() << QDesktopServices::openUrl(QUrl::fromLocalFile(iniPath));
 }
 
