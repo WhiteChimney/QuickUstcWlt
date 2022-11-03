@@ -53,6 +53,7 @@ private:
     QTime *currentTime;
     NetManager *naManager;
     QMessageBox *msgboxLoginFailed;
+    QMessageBox *msgboxAbout;
 
 public:
     void setRunAtStartup(bool setEnable);

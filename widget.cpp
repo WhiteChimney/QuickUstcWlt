@@ -89,6 +89,36 @@ void Widget::setupUI()
     msgboxLoginFailed->button(QMessageBox::Help)->setText(tr("详细信息"));
     msgboxLoginFailed->button(QMessageBox::Yes)->setText(tr("确认"));
     msgboxLoginFailed->setDefaultButton(QMessageBox::Yes);
+
+    msgboxAbout = new QMessageBox(this);
+    msgboxAbout->setIcon(QMessageBox::Information);
+    msgboxAbout->setText(tr("关于"));
+    QString helpMessage = "";
+    helpMessage += tr("这是一个简易的网络通登陆及状态查询软件\n");
+    helpMessage += tr("出口状态可以直接通过「系统托盘图标」看到\n\n");
+    helpMessage += tr("第一次使用时会自动弹出「首选项」界面\n");
+    helpMessage += tr("「登陆信息」标签页设置网络通默认使用的登陆信息\n");
+    helpMessage += tr("点击确认可以保存配置信息\n\n");
+    helpMessage += tr("「计划任务」标签页可以设置定时网络通登陆与查询\n");
+    helpMessage += tr("*注意如果间隔时间太短会触发网络通限制\n");
+    helpMessage += tr("*官方指定不能在 2 分钟内进行超过 20 次操作\n\n");
+    helpMessage += tr("「其他」标签页可以设置启动登陆与开机自启\n\n");
+    helpMessage += tr("关于系统托盘图标\n");
+    helpMessage += tr("「左键」可弹出首选项界面\n");
+    helpMessage += tr("「中键」可直接查询网络通状态\n");
+    helpMessage += tr("「右键」可进行更多操作\n");
+    helpMessage += tr("「macOS 系统」因系统限制只能左键打开菜单\n");
+    helpMessage += tr("菜单中「一键上网」指使用默认设置登陆网络通\n");
+    QUrl myUrl = QUrl("https://github.com/WhiteChimney/QuickUstcWlt/releases");
+    msgboxAbout->setInformativeText(helpMessage);
+    msgboxAbout->setStandardButtons(QMessageBox::Help | QMessageBox::Yes);
+    msgboxAbout->button(QMessageBox::Yes)->setText(tr("OK"));
+    msgboxAbout->button(QMessageBox::Help)->setText(tr("检查更新"));
+    msgboxAbout->button(QMessageBox::Help)->disconnect();
+    connect(msgboxAbout->button(QMessageBox::Help), &QAbstractButton::clicked,
+            this, [=](){QDesktopServices::openUrl(myUrl);});
+    msgboxAbout->setDefaultButton(QMessageBox::Yes);
+    msgboxAbout->setModal(false);
 }
 
 
@@ -421,21 +451,7 @@ void Widget::on_timeStartTask_userTimeChanged(const QTime &time)
 
 void Widget::on_buttonHelp_clicked()
 {
-    QString helpMessage = "";
-    helpMessage += tr("这是一个简易的网络通登陆及状态查询软件\n");
-    helpMessage += tr("出口状态可以直接通过「系统托盘图标」看到\n\n");
-    helpMessage += tr("第一次使用时会自动弹出「首选项」界面\n");
-    helpMessage += tr("在该界面设置完「用户名」与「密码」后点击确定即可保存信息\n\n");
-    helpMessage += tr("「定时查询状态（秒）」指每隔指定时间就查询一下网络通出口及权限状态\n");
-    helpMessage += tr("「查询后登陆」指在查询结束后使用指定模式登陆网络通\n");
-    helpMessage += tr("*注意如果间隔时间太短会触发网络通限制\n");
-    helpMessage += tr("*官方指定不能在 2 分钟内进行超过 20 次操作\n\n");
-    helpMessage += tr("托盘图标上「左键」可弹出首选项界面\n");
-    helpMessage += tr("「中键」可直接查询网络通状态\n");
-    helpMessage += tr("「右键」可进行更多操作\n");
-    helpMessage += tr("「macOS 系统」因系统限制只能左键打开菜单\n");
-    helpMessage += tr("「一键上网」指使用默认设置登陆网络通\n");
-    QMessageBox::about(this,tr("操作说明"),helpMessage);
+    msgboxAbout->show();
 }
 
 //设置程序自启动 appPath程序路径
