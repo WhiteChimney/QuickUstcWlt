@@ -63,7 +63,7 @@ Widget::~Widget()
 void Widget::setupUI()
 {
     this->setWindowTitle(tr("首选项"));
-    ui->comboDefaultTunnel->view()->setMinimumWidth(370);
+    ui->comboDefaultTunnel->view()->setMinimumWidth(350);
     ui->comboboxScheduledLoginStyle->view()->setMinimumWidth(200);
     for (int i = 0; i < 7; i++)
     {
@@ -539,4 +539,10 @@ QByteArray Widget::passwordDecryption(QByteArray password, int key)
     return password;
 }
 
+
+
+void Widget::on_buttonIniPath_clicked()
+{
+    qDebug() << QDesktopServices::openUrl(QUrl(iniPath));
+}
 

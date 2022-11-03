@@ -108,5 +108,6 @@ private slots:
     void on_checkboxEnableScheduledLogin_stateChanged(int checkState);
     void on_checkBoxScheduledTimeRange_stateChanged(int checkState);
     void on_timeStartTask_userTimeChanged(const QTime &time);
+    void on_buttonIniPath_clicked();
 };
 #endif // WIDGET_H

@@ -77,10 +77,9 @@ if(QT_VERSION_MAJOR EQUAL 6)
 endif()
 
 
-find_package(Qt6 REQUIRED COMPONENTS Network Core5Compat WebEngineWidgets)
+find_package(Qt6 REQUIRED COMPONENTS Network Core5Compat)
 target_link_libraries(QuickUstcWlt PRIVATE Qt6::Network)
 target_link_libraries(QuickUstcWlt PUBLIC Qt6::Core5Compat)
-target_link_libraries(QuickUstcWlt PRIVATE Qt6::WebEngineWidgets)
 
 qt_add_resources(QuickUstcWlt "app_images"
     PREFIX "/"

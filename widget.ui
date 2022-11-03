@@ -195,47 +195,47 @@
          </property>
          <item>
           <property name="text">
-           <string>1 教育网出口                     （国际，仅用教育网访问，适合看文献）</string>
+           <string>1 教育网出口                            （国际，仅用教育网访问，适合看文献）</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>2 电信网出口                     （国际，到教育网走教育网）</string>
+           <string>2 电信网出口                            （国际，到教育网走教育网）</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>3 联通网出口                     （国际，到教育网走教育网）</string>
+           <string>3 联通网出口                            （国际，到教育网走教育网）</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>4 电信网出口 2                  （国际，到教育网免费地址走教育网）</string>
+           <string>4 电信网出口 2                         （国际，到教育网免费地址走教育网）</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>5 联通网出口 2                  （国际，到教育网免费地址走教育网）</string>
+           <string>5 联通网出口 2                         （国际，到教育网免费地址走教育网）</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>6 电信网出口 3                  （国际，默认电信，其他分流）</string>
+           <string>6 电信网出口 3                         （国际，默认电信，其他分流）</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>7 联通网出口 3                  （国际，默认联通，其他分流）</string>
+           <string>7 联通网出口 3                         （国际，默认联通，其他分流）</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>8 教育网出口 2                  （国际，默认教育网，其他分流）</string>
+           <string>8 教育网出口 2                         （国际，默认教育网，其他分流）</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>9 移动网出口                     （国际，无P2P或带宽限制）</string>
+           <string>9 移动网出口                            （国际，无P2P或带宽限制）</string>
           </property>
          </item>
         </widget>
@@ -296,8 +296,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>299</width>
-            <height>282</height>
+            <width>279</width>
+            <height>262</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -452,6 +452,25 @@
         <widget class="QCheckBox" name="checkboxEnableRunAtStartup">
          <property name="text">
           <string>开机启动本程序</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="buttonIniPath">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>150</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>打开临时文件目录</string>
          </property>
         </widget>
        </item>
