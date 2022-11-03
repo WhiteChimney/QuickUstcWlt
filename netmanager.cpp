@@ -69,7 +69,7 @@ void NetManager::displayAnswer()
     fAnswer->open(QIODevice::WriteOnly | QIODevice::Truncate);
     fStream << answer.replace("gb2312","utf-8");
     fAnswer->close();
-    qDebug() << QDesktopServices::openUrl(QUrl("file://"+tmpFileName));
+    qDebug() << QDesktopServices::openUrl(QUrl("file:///"+tmpFileName).toLocalFile());
 }
 
 int NetManager::getCurrentTunnel(QString* answer)
