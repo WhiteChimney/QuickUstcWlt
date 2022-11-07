@@ -92,7 +92,7 @@ void Widget::setupUI()
 
     msgboxAbout = new QMessageBox(this);
     msgboxAbout->setIcon(QMessageBox::Information);
-    msgboxAbout->setText(tr("关于"));
+    msgboxAbout->setText(tr("关于\n\n版本：V 1.3.1\n"));
     QString helpMessage = "";
     helpMessage += tr("这是一个简易的网络通登陆及状态查询软件\n");
     helpMessage += tr("出口状态可以直接通过「系统托盘图标」看到\n\n");
@@ -101,7 +101,8 @@ void Widget::setupUI()
     helpMessage += tr("点击确认可以保存配置信息\n\n");
     helpMessage += tr("「计划任务」标签页可以设置定时网络通登陆与查询\n");
     helpMessage += tr("*注意如果间隔时间太短会触发网络通限制\n");
-    helpMessage += tr("*官方指定不能在 2 分钟内进行超过 20 次操作\n\n");
+    helpMessage += tr("*官方指定不能在 2 分钟内进行超过 20 次操作\n");
+    helpMessage += tr("*偶尔会出现的登陆失败情形可以通过选项进行忽略\n\n");
     helpMessage += tr("「其他」标签页可以设置启动登陆与开机自启\n\n");
     helpMessage += tr("关于系统托盘图标\n");
     helpMessage += tr("「左键」可弹出首选项界面\n");
@@ -272,6 +273,7 @@ void Widget::saveToIni()
     iniSettings->setValue("enableFriday",vCheckboxWeek.at(4)->isChecked());
     iniSettings->setValue("enableSaturday",vCheckboxWeek.at(5)->isChecked());
     iniSettings->setValue("enableSunday",vCheckboxWeek.at(6)->isChecked());
+    iniSettings->setValue("enableIgnoreWarning",ui->checkBoxIgnoreWarning->isChecked());
     iniSettings->setValue("timeStartTask",ui->timeStartTask->time());
     iniSettings->setValue("timeEndTask",ui->timeEndTask->time());
     delete iniSettings;
@@ -299,6 +301,8 @@ void Widget::loadFromIni()
     vCheckboxWeek.at(4)->setChecked(iniSettings->value("enableFriday").toBool());
     vCheckboxWeek.at(5)->setChecked(iniSettings->value("enableSaturday").toBool());
     vCheckboxWeek.at(6)->setChecked(iniSettings->value("enableSunday").toBool());
+    ui->checkBoxIgnoreWarning->setChecked(iniSettings->value("enableIgnoreWarning").toBool());
+
     ui->timeStartTask->setTime(iniSettings->value("timeStartTask").toTime());
     ui->timeEndTask->setTime(iniSettings->value("timeEndTask").toTime());
     delete iniSettings;
@@ -324,7 +328,7 @@ void Widget::getCurrentTunnel(int m_currentTunnel)
         if (enableScheduledCheckNet and enableScheduledLogin)
             emit scheduledCheckNetTunnelReturned(currentTunnel);
     }
-    else                                                                   // 登陆失败
+    else if (!ui->checkBoxIgnoreWarning->isChecked())                      // 登陆失败
     {
         scheduledCheckNetTimer->stop();
         ui->checkboxEnableScheduledCheckNet->setChecked(false);
@@ -397,6 +401,7 @@ void Widget::on_checkboxEnableScheduledCheckNet_stateChanged(int checkState)
         ui->textScheduledCheckNetTime->setEnabled(true);
         ui->checkboxEnableScheduledLogin->setEnabled(true);
         ui->checkBoxScheduledTimeRange->setEnabled(true);
+        ui->checkBoxIgnoreWarning->setEnabled(true);
     }
     else
     {
@@ -405,6 +410,7 @@ void Widget::on_checkboxEnableScheduledCheckNet_stateChanged(int checkState)
         ui->checkboxEnableScheduledLogin->setChecked(false);
         ui->checkBoxScheduledTimeRange->setEnabled(false);
         ui->checkBoxScheduledTimeRange->setChecked(false);
+        ui->checkBoxIgnoreWarning->setEnabled(false);
     }
 }
 
@@ -550,4 +556,5 @@ void Widget::on_checkboxEnableRunAtStartup_stateChanged(int checkState)
         this->setRunAtStartup(false);
 
 }
+
 

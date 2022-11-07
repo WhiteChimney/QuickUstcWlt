@@ -110,7 +110,7 @@
    <item row="1" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabLoginInfo">
       <attribute name="title">
@@ -295,13 +295,45 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>279</width>
-            <height>262</height>
+            <y>-75</y>
+            <width>299</width>
+            <height>311</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
-           <item row="6" column="0">
+           <item row="5" column="0">
+            <widget class="QCheckBox" name="checkBoxScheduledTimeRange">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>仅在以下时间段进行</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QComboBox" name="comboboxScheduledLoginStyle">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <item>
+              <property name="text">
+               <string>若为校内权限，则登陆默认通道</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>若为校内权限，则登陆当前通道</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>只要不是默认通道，就登陆默认通道</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="7" column="0">
             <widget class="QGroupBox" name="groupboxTimeRange">
              <property name="enabled">
               <bool>false</bool>
@@ -355,26 +387,6 @@
              </layout>
             </widget>
            </item>
-           <item row="4" column="0">
-            <widget class="QCheckBox" name="checkBoxScheduledTimeRange">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="text">
-              <string>仅在以下时间段进行</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0" colspan="2">
-            <widget class="QCheckBox" name="checkboxEnableScheduledLogin">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="text">
-              <string>查询后登陆</string>
-             </property>
-            </widget>
-           </item>
            <item row="1" column="0">
             <layout class="QHBoxLayout" name="horizontalLayout_3">
              <item>
@@ -396,26 +408,24 @@
              </item>
             </layout>
            </item>
-           <item row="3" column="0">
-            <widget class="QComboBox" name="comboboxScheduledLoginStyle">
+           <item row="8" column="0">
+            <widget class="QCheckBox" name="checkBoxIgnoreWarning">
              <property name="enabled">
               <bool>false</bool>
              </property>
-             <item>
-              <property name="text">
-               <string>若为校内权限，则登陆默认通道</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>若为校内权限，则登陆当前通道</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>只要不是默认通道，就登陆默认通道</string>
-              </property>
-             </item>
+             <property name="text">
+              <string>忽略偶尔出现的登陆失败情况</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" colspan="2">
+            <widget class="QCheckBox" name="checkboxEnableScheduledLogin">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>查询后登陆</string>
+             </property>
             </widget>
            </item>
           </layout>
