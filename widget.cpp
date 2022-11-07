@@ -220,6 +220,7 @@ void Widget::fetchUiData()
     scheduledCheckNetTime = ui->textScheduledCheckNetTime->text();
     enableScheduledLogin = ui->checkboxEnableScheduledLogin->isChecked();
     scheduledLoginStyle = ui->comboboxScheduledLoginStyle->currentIndex();
+    enableIgnoreWarning = ui->checkBoxIgnoreWarning->isChecked();
     enableAutoLogin = ui->checkboxEnableAutoLogIn->isChecked();
     enableRunAtStartup = ui->checkboxEnableRunAtStartup->isChecked();
     pushUiData();
@@ -245,6 +246,7 @@ void Widget::pushUiData()
 
     ui->checkboxEnableScheduledLogin->setChecked(enableScheduledLogin);
     ui->comboboxScheduledLoginStyle->setCurrentIndex(scheduledLoginStyle);
+    ui->checkBoxIgnoreWarning->setChecked(enableIgnoreWarning);
 
     ui->checkboxEnableAutoLogIn->setChecked(enableAutoLogin);
     ui->checkboxEnableRunAtStartup->setChecked(enableRunAtStartup);
@@ -263,6 +265,7 @@ void Widget::saveToIni()
     iniSettings->setValue("scheduledCheckNetTime",scheduledCheckNetTime);
     iniSettings->setValue("enableScheduledLogin",enableScheduledLogin);
     iniSettings->setValue("scheduledLoginStyle",scheduledLoginStyle);
+    iniSettings->setValue("enableIgnoreWarning",enableIgnoreWarning);
     iniSettings->setValue("enableAutoLogin",enableAutoLogin);
     iniSettings->setValue("enableRunAtStartup",enableRunAtStartup);
     iniSettings->setValue("enableTimeRange",ui->checkBoxScheduledTimeRange->isChecked());
@@ -273,7 +276,6 @@ void Widget::saveToIni()
     iniSettings->setValue("enableFriday",vCheckboxWeek.at(4)->isChecked());
     iniSettings->setValue("enableSaturday",vCheckboxWeek.at(5)->isChecked());
     iniSettings->setValue("enableSunday",vCheckboxWeek.at(6)->isChecked());
-    iniSettings->setValue("enableIgnoreWarning",ui->checkBoxIgnoreWarning->isChecked());
     iniSettings->setValue("timeStartTask",ui->timeStartTask->time());
     iniSettings->setValue("timeEndTask",ui->timeEndTask->time());
     delete iniSettings;
@@ -290,6 +292,7 @@ void Widget::loadFromIni()
     scheduledCheckNetTime = iniSettings->value("scheduledCheckNetTime").toString();
     enableScheduledLogin = iniSettings->value("enableScheduledLogin").toBool();
     scheduledLoginStyle = iniSettings->value("scheduledLoginStyle").toInt();
+    enableIgnoreWarning = iniSettings->value("enableIgnoreWarning").toBool();
     enableAutoLogin = iniSettings->value("enableAutoLogin").toBool();
     enableRunAtStartup = iniSettings->value("enableRunAtStartup").toBool();
 
@@ -301,7 +304,6 @@ void Widget::loadFromIni()
     vCheckboxWeek.at(4)->setChecked(iniSettings->value("enableFriday").toBool());
     vCheckboxWeek.at(5)->setChecked(iniSettings->value("enableSaturday").toBool());
     vCheckboxWeek.at(6)->setChecked(iniSettings->value("enableSunday").toBool());
-    ui->checkBoxIgnoreWarning->setChecked(iniSettings->value("enableIgnoreWarning").toBool());
 
     ui->timeStartTask->setTime(iniSettings->value("timeStartTask").toTime());
     ui->timeEndTask->setTime(iniSettings->value("timeEndTask").toTime());
@@ -328,7 +330,7 @@ void Widget::getCurrentTunnel(int m_currentTunnel)
         if (enableScheduledCheckNet and enableScheduledLogin)
             emit scheduledCheckNetTunnelReturned(currentTunnel);
     }
-    else if (!ui->checkBoxIgnoreWarning->isChecked())                      // 登陆失败
+    else if (!enableIgnoreWarning)                      // 登陆失败
     {
         scheduledCheckNetTimer->stop();
         ui->checkboxEnableScheduledCheckNet->setChecked(false);
@@ -372,6 +374,8 @@ void Widget::on_buttonSet_clicked()
 
     this->saveToIni();
 
+    enableIgnoreWarning = false;
+
     if (enableScheduledCheckNet)
         scheduledCheckNetTimer->start(1000*scheduledCheckNetTime.toInt()+0.17);
     else
@@ -383,8 +387,9 @@ void Widget::on_buttonSet_clicked()
         ui->buttonSet->setText(tr("确定"));
         tempTimer->stop();
         delete tempTimer;
+        enableIgnoreWarning = ui->checkBoxIgnoreWarning->isChecked();
     });
-    tempTimer->start(250);
+    tempTimer->start(500);
 
     naManager->setTunnel(defaultTunnel);
 }

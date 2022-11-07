@@ -47,6 +47,7 @@ private:
     QTimer *scheduledCheckNetTimer;
     bool enableScheduledLogin;
     int scheduledLoginStyle;
+    bool enableIgnoreWarning;
     bool enableAutoLogin, enableRunAtStartup;
     QVector<QCheckBox*> vCheckboxWeek;
     QDate *currentDate;
