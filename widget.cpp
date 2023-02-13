@@ -14,15 +14,7 @@ Widget::Widget(QWidget *parent)
     naManager = new NetManager(this);
     connect(naManager, &NetManager::returnTunnel, this, &Widget::getCurrentTunnel);
     scheduledCheckNetTimer = new QTimer(this);
-    connect(scheduledCheckNetTimer, &QTimer::timeout, naManager, [=](){
-        if (ui->checkBoxScheduledTimeRange->isChecked())
-        {
-            if (vCheckboxWeek.at(currentDate->currentDate().dayOfWeek()-1)->isChecked()
-                    and currentTime->currentTime() > ui->timeStartTask->time()
-                    and currentTime->currentTime() < ui->timeEndTask->time())
-                naManager->checkNet();
-        }
-    });
+    connect(scheduledCheckNetTimer, &QTimer::timeout, this, &Widget::dealScheduledCheckNetTimerTimeout);
     connect(this, &Widget::scheduledCheckNetTunnelReturned, this, &Widget::dealScheduledCheckNetTunnelReturned);
     currentDate = new QDate();
     currentTime = new QTime();
@@ -48,11 +40,17 @@ Widget::Widget(QWidget *parent)
     connect(trayIcon, &QSystemTrayIcon::activated, this, &Widget::dealTrayIconActivated);
     trayIcon->show();
 
+    naManager->updateData(userName, password, defaultTunnel, expireTime);
+
 //    启动计划任务
     if (enableAutoLogin)
         on_buttonSet_clicked();
-
-    naManager->updateData(userName, password, defaultTunnel, expireTime);
+    else
+        if (enableScheduledCheckNet)
+        {
+            dealScheduledCheckNetTimerTimeout();
+            scheduledCheckNetTimer->start(1000*scheduledCheckNetTime.toInt()+0.17);
+        }
 }
 
 Widget::~Widget()
@@ -350,11 +348,24 @@ void Widget::dealScheduledCheckNetTunnelReturned(int m_currentTunnel)
         naManager->setTunnel(defaultTunnel);
     else if (m_currentTunnel > 8)                                       // 否则校内时才操作
     {
-        if (scheduledLoginStyle == 0)                                   // 登陆默认通道
+        if (scheduledLoginStyle == 1)                                   // 登陆默认通道
             naManager->setTunnel(defaultTunnel);
         else
             naManager->setTunnel(m_currentTunnel-1958);                 // 登陆当前通道
     }
+}
+
+void Widget::dealScheduledCheckNetTimerTimeout()
+{
+    if (ui->checkBoxScheduledTimeRange->isChecked())
+    {
+        if (vCheckboxWeek.at(currentDate->currentDate().dayOfWeek()-1)->isChecked()
+                and currentTime->currentTime() > ui->timeStartTask->time()
+                and currentTime->currentTime() < ui->timeEndTask->time())
+            naManager->checkNet();
+    }
+    else
+        naManager->checkNet();
 }
 
 void Widget::setCheckedTunnel(int checkedTunnel)

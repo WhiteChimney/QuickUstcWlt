@@ -64,6 +64,7 @@ signals:
     void scheduledCheckNetTunnelReturned(int tunnel);
 public slots:
     void dealScheduledCheckNetTunnelReturned(int tunnel);
+    void dealScheduledCheckNetTimerTimeout();
 
 //    系统托盘菜单项
 private:
