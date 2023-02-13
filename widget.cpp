@@ -90,7 +90,7 @@ void Widget::setupUI()
 
     msgboxAbout = new QMessageBox(this);
     msgboxAbout->setIcon(QMessageBox::Information);
-    msgboxAbout->setText(tr("关于\n\n版本：V 1.3.1\n"));
+    msgboxAbout->setText(tr("关于\n\n版本：V 1.3.2\n"));
     QString helpMessage = "";
     helpMessage += tr("这是一个简易的网络通登陆及状态查询软件\n");
     helpMessage += tr("出口状态可以直接通过「系统托盘图标」看到\n\n");
