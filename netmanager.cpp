@@ -60,6 +60,7 @@ void NetManager::setTunnel(int tunnel)
 void NetManager::dealLoginWlt(QNetworkReply* nReply)
 {
     answer = gb_code->toUnicode(nReply->readAll());
+    nReply->deleteLater();
     tunnel = this->getCurrentTunnel(&answer);
     emit returnTunnel(tunnel);
 }

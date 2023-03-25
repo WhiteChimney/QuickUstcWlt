@@ -1,0 +1,8 @@
+#ifndef PROJECTINFO_H
+#define PROJECTINFO_H
+
+#define PROJECT_VERSION_0 "1"
+#define PROJECT_VERSION_1 "3"
+#define PROJECT_VERSION_2 "3"
+
+#endif // PROJECTINFO_H

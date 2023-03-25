@@ -27,6 +27,7 @@ endif()
 
 set(PROJECT_SOURCES
         main.cpp
+        projectInfo.h
         widget.cpp
         widget.h
         widget.ui

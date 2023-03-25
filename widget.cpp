@@ -9,7 +9,6 @@ Widget::Widget(QWidget *parent)
     ui->setupUi(this);
     this->setupUI();
 
-
 //    设置任务
     naManager = new NetManager(this);
     connect(naManager, &NetManager::returnTunnel, this, &Widget::getCurrentTunnel);
@@ -90,7 +89,10 @@ void Widget::setupUI()
 
     msgboxAbout = new QMessageBox(this);
     msgboxAbout->setIcon(QMessageBox::Information);
-    msgboxAbout->setText(tr("关于\n\n版本：V 1.3.2\n"));
+    msgboxAbout->setText(tr("关于\n\n版本：V ")
+                       + tr(PROJECT_VERSION_0) + tr(".")
+                       + tr(PROJECT_VERSION_1) + tr(".")
+                       + tr(PROJECT_VERSION_2) + tr("\n"));
     QString helpMessage = "";
     helpMessage += tr("这是一个简易的网络通登陆及状态查询软件\n");
     helpMessage += tr("出口状态可以直接通过「系统托盘图标」看到\n\n");
