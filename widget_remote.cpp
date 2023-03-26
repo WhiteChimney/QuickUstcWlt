@@ -68,7 +68,16 @@ void Widget::serverSendMsg(QString str)
 
 void Widget::dealServerRecvCmd()
 {
-    int cmd = tcpSocketServer->readAll().toInt();
+    QString msg = tcpSocketServer->readAll();
+    QString remoteUsername = msg.chopped(1);
+    int userMatch = QString::compare(remoteUsername,userName);
+    if (userMatch != 0)
+    {
+        serverSendMsg(tr("账户信息不匹配"));
+        return;
+    }
+
+    int cmd = msg.last(1).toInt();
     if (cmd == TCP_CHECKTUNNEL)
     {
         disconnect(this,&Widget::tunnelUpdated,this,&Widget::dealRemoteCheckNet);
@@ -149,12 +158,14 @@ void Widget::clientSendMsg(QString str)
 
 void Widget::on_buttonRemoteLogin_clicked()
 {
-    clientSendMsg(QString::number(ui->comboRemoteTunnel->currentIndex()+1));
+    clientSendMsg(userName +
+                  QString::number(ui->comboRemoteTunnel->currentIndex()+1));
 }
 
 void Widget::on_buttonCheckRemoteNet_clicked()
 {
-    clientSendMsg(QString::number(TCP_CHECKTUNNEL));
+    clientSendMsg(userName +
+                  QString::number(TCP_CHECKTUNNEL));
 }
 
 void Widget::closeTcpService()
