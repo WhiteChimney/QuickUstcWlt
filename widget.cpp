@@ -46,7 +46,6 @@ Widget::Widget(QWidget *parent)
         tcpServerState = startTcpServer();
     else
         tcpServerState = false;
-    tcpSocketClient = new QTcpSocket(this);
 
 //    启动计划任务
     if (enableAutoLogin)
@@ -62,6 +61,7 @@ Widget::Widget(QWidget *parent)
 Widget::~Widget()
 {
     saveToIni();
+    closeTcpService();
     delete ui;
 }
 
@@ -112,6 +112,9 @@ void Widget::setupUI()
     helpMessage += tr("*官方指定不能在 2 分钟内进行超过 20 次操作\n");
     helpMessage += tr("*偶尔会出现的登陆失败情形可以通过选项进行忽略\n\n");
     helpMessage += tr("「其他」标签页可以设置启动登陆与开机自启\n\n");
+    helpMessage += tr("「远程登陆」用于指定 IP 登陆网络通\n");
+    helpMessage += tr("需要被控端勾选了允许远程登陆的选项\n");
+    helpMessage += tr("且提前登陆了有效的网络通账号\n\n");
     helpMessage += tr("关于系统托盘图标\n");
     helpMessage += tr("「左键」可弹出首选项界面\n");
     helpMessage += tr("「中键」可直接查询网络通状态\n");
@@ -267,11 +270,13 @@ void Widget::getCurrentTunnel(int m_currentTunnel)
         currentTunnel = m_currentTunnel;
         if (m_currentTunnel < 9)                                            // 网络通权限正常
         {
+            networkAccess = true;
             trayIcon->setIcon(QIcon(QString(":/images/WLT_logo_") + QString::number(currentTunnel) + QString(".png")));
             this->setCheckedTunnel(currentTunnel);
         }
         else                                                               // 网络通权限权限为校内
         {
+            networkAccess = false;
             trayIcon->setIcon(QIcon(QString(":/images/WLT_logo_none.png")));
             this->setCheckedTunnel(currentTunnel-1958);
         }
@@ -280,6 +285,7 @@ void Widget::getCurrentTunnel(int m_currentTunnel)
     }
     else if (!enableIgnoreWarning)                      // 登陆失败
     {
+        networkAccess = false;
         scheduledCheckNetTimer->stop();
         ui->checkboxEnableScheduledCheckNet->setChecked(false);
         ui->checkboxEnableScheduledLogin->setChecked(false);
@@ -290,6 +296,7 @@ void Widget::getCurrentTunnel(int m_currentTunnel)
 
         this->show();
     }
+    emit tunnelUpdated();
 }
 
 void Widget::on_buttonSet_clicked()

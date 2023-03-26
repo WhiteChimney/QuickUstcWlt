@@ -46,6 +46,7 @@ private:
 private:
     QString userName, password;
     int defaultTunnel, currentTunnel;
+    bool networkAccess = false;
     int expireTimeIndex; QString expireTime;
     bool enableScheduledCheckNet;
     QString scheduledCheckNetTime;
@@ -113,16 +114,22 @@ private:
     bool tcpServerState = false;
     bool tcpClientConnectState = false;
 
+signals:
+    void tunnelUpdated();
+
 public slots:
     void dealServerNewConnection();
+    void dealServerDisconnected();
     void dealServerRecvCmd();
     void dealClientRecvMsg();
+    void dealRemoteCheckNet();
 
 public:
     bool startTcpServer();
     void stopTcpServer();
     void serverSendMsg(QString);
     void clientSendMsg(QString);
+    void closeTcpService();
 
 //    其他操作
 private slots:

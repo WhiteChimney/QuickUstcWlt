@@ -494,11 +494,25 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
-           <layout class="QFormLayout" name="formLayout">
+           <layout class="QGridLayout" name="gridLayout_5">
             <item row="0" column="0">
              <widget class="QLabel" name="label_8">
               <property name="text">
                <string>远程IP地址</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLabel" name="labelServerMsg">
+              <property name="text">
+               <string>尚未连接</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="textRemotePort">
+              <property name="text">
+               <string>23123</string>
               </property>
              </widget>
             </item>
@@ -516,14 +530,14 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
-             <widget class="QLineEdit" name="textRemotePort">
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_12">
               <property name="text">
-               <string>23123</string>
+               <string>通道号</string>
               </property>
              </widget>
             </item>
-            <item row="2" column="0">
+            <item row="3" column="0">
              <widget class="QLabel" name="label_10">
               <property name="text">
                <string>远程状态</string>
@@ -531,41 +545,100 @@
              </widget>
             </item>
             <item row="2" column="1">
-             <widget class="QLabel" name="labelServerMsg">
-              <property name="text">
-               <string>尚未连接</string>
+             <widget class="QComboBox" name="comboRemoteTunnel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
+              <property name="minimumSize">
+               <size>
+                <width>10</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>200</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QComboBox::AdjustToContents</enum>
+              </property>
+              <item>
+               <property name="text">
+                <string>1 教育网出口</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>2 电信网出口</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>3 联通网出口</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>4 电信网出口 2</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>5 联通网出口 2</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>6 电信网出口 3</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>7 联通网出口 3</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>8 教育网出口 2</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>9 移动网出口</string>
+               </property>
+              </item>
              </widget>
             </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_3">
-            <item>
+            <item row="0" column="2">
              <widget class="QPushButton" name="buttonStartConnect">
               <property name="text">
                <string>开始连接</string>
               </property>
              </widget>
             </item>
-            <item>
+            <item row="1" column="2">
              <widget class="QPushButton" name="buttonStopConnect">
               <property name="text">
                <string>断开连接</string>
               </property>
              </widget>
             </item>
-            <item>
-             <widget class="QPushButton" name="buttonCheckRemoteNet">
+            <item row="2" column="2">
+             <widget class="QPushButton" name="buttonRemoteLogin">
               <property name="text">
-               <string>查询通道</string>
+               <string>远程上网</string>
               </property>
              </widget>
             </item>
-            <item>
-             <widget class="QPushButton" name="buttonRemoteLogin">
+            <item row="3" column="2">
+             <widget class="QPushButton" name="buttonCheckRemoteNet">
               <property name="text">
-               <string>一键上网</string>
+               <string>查询通道</string>
               </property>
              </widget>
             </item>
