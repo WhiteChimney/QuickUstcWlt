@@ -31,6 +31,9 @@ set(PROJECT_SOURCES
         widget.cpp
         widget.h
         widget.ui
+        widget_systemTray.cpp
+        widget_scheduling.cpp
+        widget_others.cpp
         netmanager.h netmanager.cpp
 )
 
