@@ -41,6 +41,13 @@ Widget::Widget(QWidget *parent)
 
     naManager->updateData(userName, password, defaultTunnel, expireTime);
 
+//    远程
+    if (ui->checkBoxAllowRemote->isChecked())
+        tcpServerState = startTcpServer();
+    else
+        tcpServerState = false;
+    tcpSocketClient = new QTcpSocket(this);
+
 //    启动计划任务
     if (enableAutoLogin)
         on_buttonSet_clicked();
@@ -54,6 +61,7 @@ Widget::Widget(QWidget *parent)
 
 Widget::~Widget()
 {
+    saveToIni();
     delete ui;
 }
 
@@ -187,13 +195,12 @@ void Widget::saveToIni()
     iniSettings->setValue("password",this->passwordEncryption(password.toLocal8Bit().data(),key));
     iniSettings->setValue("defaultTunnel",defaultTunnel);
     iniSettings->setValue("expireTimeIndex",expireTimeIndex);
+
     iniSettings->setValue("enableScheduledCheckNet",enableScheduledCheckNet);
     iniSettings->setValue("scheduledCheckNetTime",scheduledCheckNetTime);
     iniSettings->setValue("enableScheduledLogin",enableScheduledLogin);
     iniSettings->setValue("scheduledLoginStyle",scheduledLoginStyle);
     iniSettings->setValue("enableIgnoreWarning",enableIgnoreWarning);
-    iniSettings->setValue("enableAutoLogin",enableAutoLogin);
-    iniSettings->setValue("enableRunAtStartup",enableRunAtStartup);
     iniSettings->setValue("enableTimeRange",ui->checkBoxScheduledTimeRange->isChecked());
     iniSettings->setValue("enableMonday",vCheckboxWeek.at(0)->isChecked());
     iniSettings->setValue("enableTuesday",vCheckboxWeek.at(1)->isChecked());
@@ -204,6 +211,15 @@ void Widget::saveToIni()
     iniSettings->setValue("enableSunday",vCheckboxWeek.at(6)->isChecked());
     iniSettings->setValue("timeStartTask",ui->timeStartTask->time());
     iniSettings->setValue("timeEndTask",ui->timeEndTask->time());
+
+    iniSettings->setValue("enableAutoLogin",enableAutoLogin);
+    iniSettings->setValue("enableRunAtStartup",enableRunAtStartup);
+
+    iniSettings->setValue("allowRemote",ui->checkBoxAllowRemote->isChecked());
+    iniSettings->setValue("localPort",ui->textLocalPort->text().toUInt());
+    iniSettings->setValue("remoteIP",ui->textRemoteIP->text());
+    iniSettings->setValue("remotePort",ui->textRemotePort->text().toUInt());
+
     delete iniSettings;
 }
 
@@ -233,6 +249,12 @@ void Widget::loadFromIni()
 
     ui->timeStartTask->setTime(iniSettings->value("timeStartTask").toTime());
     ui->timeEndTask->setTime(iniSettings->value("timeEndTask").toTime());
+
+    ui->checkBoxAllowRemote->setChecked(iniSettings->value("allowRemote").toBool());
+    ui->textLocalPort->setText(iniSettings->value("localPort").toString());
+    ui->textRemoteIP->setText(iniSettings->value("remoteIP").toString());
+    ui->textRemotePort->setText(iniSettings->value("remotePort").toString());
+
     delete iniSettings;
 
     pushUiData();
@@ -319,5 +341,3 @@ QByteArray Widget::passwordDecryption(QByteArray password, int key)
         password[i] -= key;
     return password;
 }
-
-

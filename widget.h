@@ -17,6 +17,9 @@
 #include <QSettings>
 #include <QDir>
 
+#include <QtNetwork/QTcpServer>
+#include <QtNetwork/QTcpSocket>
+
 #include <QDebug>
 
 #include "netmanager.h"
@@ -102,6 +105,25 @@ public:
     QByteArray passwordEncryption(QByteArray password, int key);
     QByteArray passwordDecryption(QByteArray password, int key);
 
+//    远程登陆
+private:
+    QTcpServer *tcpServer;
+    QTcpSocket *tcpSocketServer;
+    QTcpSocket *tcpSocketClient;
+    bool tcpServerState = false;
+    bool tcpClientConnectState = false;
+
+public slots:
+    void dealServerNewConnection();
+    void dealServerRecvCmd();
+    void dealClientRecvMsg();
+
+public:
+    bool startTcpServer();
+    void stopTcpServer();
+    void serverSendMsg(QString);
+    void clientSendMsg(QString);
+
 //    其他操作
 private slots:
     void on_buttonSet_clicked();
@@ -114,5 +136,12 @@ private slots:
     void on_timeStartTask_userTimeChanged(const QTime &time);
     void on_buttonIniPath_clicked();
     void on_checkboxEnableRunAtStartup_stateChanged(int checkState);
+    void on_checkBoxAllowRemote_stateChanged(int arg1);
+    void on_buttonStartConnect_clicked();
+    void on_buttonStopConnect_clicked();
+    void on_buttonRemoteLogin_clicked();
+    void on_buttonCheckRemoteNet_clicked();
+    void on_textLocalPort_textChanged(const QString &arg1);
+    void on_textRemotePort_textChanged(const QString &arg1);
 };
 #endif // WIDGET_H

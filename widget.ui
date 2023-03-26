@@ -110,7 +110,7 @@
    <item row="1" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tabLoginInfo">
       <attribute name="title">
@@ -453,18 +453,32 @@
            </widget>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_4">
-            <item>
+           <layout class="QFormLayout" name="formLayout_2">
+            <item row="0" column="0">
              <widget class="QLabel" name="label_7">
               <property name="text">
                <string>端口号</string>
               </property>
              </widget>
             </item>
-            <item>
+            <item row="0" column="1">
              <widget class="QLineEdit" name="textLocalPort">
               <property name="text">
                <string>23123</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_11">
+              <property name="text">
+               <string>服务端状态</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLabel" name="labelServerInfo">
+              <property name="text">
+               <string>未开启</string>
               </property>
              </widget>
             </item>
@@ -517,7 +531,7 @@
              </widget>
             </item>
             <item row="2" column="1">
-             <widget class="QLabel" name="labelServerInfo">
+             <widget class="QLabel" name="labelServerMsg">
               <property name="text">
                <string>尚未连接</string>
               </property>
@@ -538,6 +552,13 @@
              <widget class="QPushButton" name="buttonStopConnect">
               <property name="text">
                <string>断开连接</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="buttonCheckRemoteNet">
+              <property name="text">
+               <string>查询通道</string>
               </property>
              </widget>
             </item>

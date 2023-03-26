@@ -33,6 +33,7 @@ set(PROJECT_SOURCES
         widget.ui
         widget_systemTray.cpp
         widget_scheduling.cpp
+        widget_remote.cpp
         widget_others.cpp
         netmanager.h netmanager.cpp
 )
