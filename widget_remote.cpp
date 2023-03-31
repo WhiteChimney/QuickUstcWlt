@@ -54,7 +54,6 @@ void Widget::dealServerNewConnection()
 
 void Widget::dealServerDisconnected()
 {
-    tcpSocketServer->deleteLater();
     if (tcpServerState)
         ui->labelServerInfo->setText(tr("已开启，等待连接"));
     else
