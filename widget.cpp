@@ -301,28 +301,31 @@ void Widget::getCurrentTunnel(int m_currentTunnel)
 
 void Widget::on_buttonSet_clicked()
 {
-    on_textScheduledCheckNetTime_editingFinished();
-
     this->saveToIni();
 
-    enableIgnoreWarning = false;
+    if (ui->tabWidget->currentIndex() == 0)
+        naManager->setTunnel(defaultTunnel);
+    else if (ui->tabWidget->currentIndex() == 1)
+    {
+        on_textScheduledCheckNetTime_editingFinished();
 
-    if (enableScheduledCheckNet)
-        scheduledCheckNetTimer->start(1000*scheduledCheckNetTime.toInt()+0.17);
-    else
-        scheduledCheckNetTimer->stop();
+        if (enableScheduledCheckNet)
+            scheduledCheckNetTimer->start(1000*scheduledCheckNetTime.toInt()+0.17);
+        else
+            scheduledCheckNetTimer->stop();
 
+        enableIgnoreWarning = ui->checkBoxIgnoreWarning->isChecked();
+    }
+
+    // 短暂的动画
     ui->buttonSet->setText(tr("确定 √"));
     QTimer* tempTimer = new QTimer(this);
     connect(tempTimer, &QTimer::timeout, this, [=](){
         ui->buttonSet->setText(tr("确定"));
         tempTimer->stop();
         delete tempTimer;
-        enableIgnoreWarning = ui->checkBoxIgnoreWarning->isChecked();
     });
     tempTimer->start(500);
-
-    naManager->setTunnel(defaultTunnel);
 }
 
 void Widget::on_buttonClose_clicked()

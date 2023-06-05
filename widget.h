@@ -150,5 +150,8 @@ private slots:
     void on_buttonCheckRemoteNet_clicked();
     void on_textLocalPort_textChanged(const QString &arg1);
     void on_textRemotePort_textChanged(const QString &arg1);
+    void on_buttonTcpStartScheduleCheck_clicked();
+    void on_buttonTcpStopScheduleCheck_clicked();
+    void on_buttonTcpStartScheduleLogin_clicked();
 };
 #endif // WIDGET_H

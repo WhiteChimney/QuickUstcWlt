@@ -220,9 +220,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-2</y>
-            <width>320</width>
-            <height>311</height>
+            <y>0</y>
+            <width>365</width>
+            <height>351</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -377,8 +377,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>320</width>
-            <height>403</height>
+            <width>351</width>
+            <height>528</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -438,31 +438,68 @@
              <layout class="QHBoxLayout" name="horizontalLayout_5">
               <item>
                <layout class="QGridLayout" name="gridLayout_5">
-                <item row="0" column="0">
-                 <widget class="QLabel" name="label_8">
-                  <property name="text">
-                   <string>远程IP地址</string>
+                <item row="4" column="2" colspan="2">
+                 <widget class="QGroupBox" name="groupBox_3">
+                  <property name="title">
+                   <string/>
                   </property>
+                  <layout class="QGridLayout" name="gridLayout_6">
+                   <item row="3" column="1">
+                    <widget class="QPushButton" name="buttonTcpStartScheduleLogin">
+                     <property name="text">
+                      <string>启用定时查询并登陆</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="1">
+                    <widget class="QPushButton" name="buttonTcpStartScheduleCheck">
+                     <property name="text">
+                      <string>启用定时查询</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QPushButton" name="buttonCheckRemoteNet">
+                     <property name="text">
+                      <string>查询通道</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="0">
+                    <widget class="QPushButton" name="buttonTcpStopScheduleCheck">
+                     <property name="text">
+                      <string>关闭定时查询</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
                  </widget>
                 </item>
-                <item row="3" column="1">
+                <item row="5" column="2" colspan="2">
                  <widget class="QLabel" name="labelServerMsg">
                   <property name="text">
                    <string>尚未连接</string>
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="1">
+                <item row="0" column="3">
+                 <widget class="QPushButton" name="buttonStartConnect">
+                  <property name="text">
+                   <string>开始连接</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2">
                  <widget class="QLineEdit" name="textRemotePort">
                   <property name="text">
                    <string>23123</string>
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="1">
-                 <widget class="QLineEdit" name="textRemoteIP">
+                <item row="4" column="0">
+                 <widget class="QLabel" name="label_14">
                   <property name="text">
-                   <string>127.0.0.1</string>
+                   <string>其他命令</string>
                   </property>
                  </widget>
                 </item>
@@ -473,21 +510,49 @@
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="0">
-                 <widget class="QLabel" name="label_12">
+                <item row="1" column="3">
+                 <widget class="QPushButton" name="buttonStopConnect">
                   <property name="text">
-                   <string>通道号</string>
+                   <string>断开连接</string>
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="0">
+                <item row="5" column="0">
                  <widget class="QLabel" name="label_10">
                   <property name="text">
                    <string>远程状态</string>
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="1">
+                <item row="0" column="2">
+                 <widget class="QLineEdit" name="textRemoteIP">
+                  <property name="text">
+                   <string>127.0.0.1</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="3">
+                 <widget class="QPushButton" name="buttonRemoteLogin">
+                  <property name="text">
+                   <string>设定通道</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_8">
+                  <property name="text">
+                   <string>远程IP地址</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0" rowspan="2">
+                 <widget class="QLabel" name="label_12">
+                  <property name="text">
+                   <string>通道号</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="2" rowspan="2">
                  <widget class="QComboBox" name="comboRemoteTunnel">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -557,34 +622,6 @@
                   </item>
                  </widget>
                 </item>
-                <item row="0" column="2">
-                 <widget class="QPushButton" name="buttonStartConnect">
-                  <property name="text">
-                   <string>开始连接</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="2">
-                 <widget class="QPushButton" name="buttonStopConnect">
-                  <property name="text">
-                   <string>断开连接</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="2">
-                 <widget class="QPushButton" name="buttonRemoteLogin">
-                  <property name="text">
-                   <string>远程上网</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="2">
-                 <widget class="QPushButton" name="buttonCheckRemoteNet">
-                  <property name="text">
-                   <string>查询通道</string>
-                  </property>
-                 </widget>
-                </item>
                </layout>
               </item>
              </layout>
@@ -594,9 +631,14 @@
             <widget class="QLabel" name="label_13">
              <property name="text">
               <string>注：基于非加密的 TCP/IP 协议
-控制端命令格式为“用户名+数字”（不用写加号）
-数字1-9表示通道号，0表示仅查询
-用户名必须与登陆信息页面填写的用户名一致</string>
+控制端命令格式为“用户名&amp;密码&amp;命令”
+用户名与密码必须与登陆信息页面填写的用户名一致
+远程命令目前有如下几种
+0 用于查询通道，1-9 用于直接设定对应通道
+其他的大于等于 10 的数字用于设置其他功能
+211 为启用定时查询功能
+212 为关闭定时查询功能
+221 为启用定时查询并登陆功能</string>
              </property>
             </widget>
            </item>

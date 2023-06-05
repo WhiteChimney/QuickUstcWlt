@@ -2,7 +2,7 @@
 #define PROJECTINFO_H
 
 #define PROJECT_VERSION_0 "1"
-#define PROJECT_VERSION_1 "4"
+#define PROJECT_VERSION_1 "5"
 #define PROJECT_VERSION_2 "0"
 
 #endif // PROJECTINFO_H

@@ -1,7 +1,18 @@
 #include "widget.h"
 #include "./ui_widget.h"
 
+// 远程命令定义规则
+// 格式：username&password&command
+// 其中 command 为非负整数
+// 0 用于查询通道，1-9 用于直接设定对应通道
+// 其他的大于等于 10 的数字用于设置其他功能
+// 第一位表示设置面板中的第几个 tab
+// 如 1 表示登陆信息页，2 表示计划任务页
+// 后面的位数自行定义功能
 #define TCP_CHECKTUNNEL 0
+#define TCP_STARTSCHEDULE 211
+#define TCP_STOPSCHEDULE 212
+#define TCP_STARTSCHEDULELOGIN 221
 
 void Widget::on_checkBoxAllowRemote_stateChanged(int checkState)
 {
@@ -68,25 +79,63 @@ void Widget::serverSendMsg(QString str)
 void Widget::dealServerRecvCmd()
 {
     QString msg = tcpSocketServer->readAll();
-    QString remoteUsername = msg.chopped(1);
-    int userMatch = QString::compare(remoteUsername,userName);
-    if (userMatch != 0)
+    QString remoteUsername = msg.split(QLatin1Char('&')).first();
+    QString remotePassword = msg.split(QLatin1Char('&')).at(1);
+    int usernameMatch = QString::compare(remoteUsername,userName);
+    int passwordMatch = QString::compare(remotePassword,password);
+    if (usernameMatch != 0 or passwordMatch != 0)
     {
         serverSendMsg(tr("账户信息不匹配"));
         return;
     }
 
-    int cmd = msg.last(1).toInt();
-    if (cmd == TCP_CHECKTUNNEL)
+    int cmd = msg.split(QLatin1Char('&')).last().toInt();
+    if (cmd < 0)
     {
-        disconnect(this,&Widget::tunnelUpdated,this,&Widget::dealRemoteCheckNet);
-        connect(this,&Widget::tunnelUpdated,this,&Widget::dealRemoteCheckNet);
-        naManager->checkNet();
+        serverSendMsg(tr("不存在的指令！"));
+        return;
+    }
+    if (cmd < 10)
+    {
+        if (cmd == TCP_CHECKTUNNEL)
+        {
+            disconnect(this,&Widget::tunnelUpdated,this,&Widget::dealRemoteCheckNet);
+            connect(this,&Widget::tunnelUpdated,this,&Widget::dealRemoteCheckNet);
+            naManager->checkNet();
+        }
+        else
+        {
+            naManager->setTunnel(cmd-1);
+            serverSendMsg(tr("通道 ") + QString::number(cmd) + tr("，国际"));
+        }
     }
     else
     {
-        naManager->setTunnel(cmd-1);
-        serverSendMsg(tr("通道 ") + QString::number(cmd) + tr("，国际"));
+        int currentTabIndex = cmd;
+        while (currentTabIndex >= 10)
+            currentTabIndex = currentTabIndex / 10;
+        if (currentTabIndex < 5)
+            ui->tabWidget->setCurrentIndex(currentTabIndex-1);
+        switch (cmd) {
+        case TCP_STARTSCHEDULE:
+            ui->checkboxEnableScheduledCheckNet->setChecked(true);
+            serverSendMsg(tr("已打开定时查询功能"));
+            break;
+        case TCP_STOPSCHEDULE:
+            ui->checkboxEnableScheduledLogin->setChecked(false);
+            ui->checkboxEnableScheduledCheckNet->setChecked(false);
+            serverSendMsg(tr("已关闭定时查询功能"));
+            break;
+        case TCP_STARTSCHEDULELOGIN:
+            ui->checkboxEnableScheduledCheckNet->setChecked(true);
+            ui->checkboxEnableScheduledLogin->setChecked(true);
+            serverSendMsg(tr("已打开定时查询并登陆功能"));
+            break;
+        default:
+            serverSendMsg(tr("不存在的指令！"));
+            break;
+        }
+        this->saveToIni();
     }
 }
 
@@ -157,14 +206,32 @@ void Widget::clientSendMsg(QString str)
 
 void Widget::on_buttonRemoteLogin_clicked()
 {
-    clientSendMsg(userName +
+    clientSendMsg(userName + "&" + password + "&" +
                   QString::number(ui->comboRemoteTunnel->currentIndex()+1));
 }
 
 void Widget::on_buttonCheckRemoteNet_clicked()
 {
-    clientSendMsg(userName +
+    clientSendMsg(userName + "&" + password + "&" +
                   QString::number(TCP_CHECKTUNNEL));
+}
+
+void Widget::on_buttonTcpStartScheduleCheck_clicked()
+{
+    clientSendMsg(userName + "&" + password + "&" +
+                  QString::number(TCP_STARTSCHEDULE));
+}
+
+void Widget::on_buttonTcpStopScheduleCheck_clicked()
+{
+    clientSendMsg(userName + "&" + password + "&" +
+                  QString::number(TCP_STOPSCHEDULE));
+}
+
+void Widget::on_buttonTcpStartScheduleLogin_clicked()
+{
+    clientSendMsg(userName + "&" + password + "&" +
+                  QString::number(TCP_STARTSCHEDULELOGIN));
 }
 
 void Widget::closeTcpService()
