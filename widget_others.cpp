@@ -76,3 +76,8 @@ void Widget::on_buttonIniPath_clicked()
 {
     QDesktopServices::openUrl(QUrl::fromLocalFile(iniPath));
 }
+
+void Widget::on_buttonExit_clicked()
+{
+    qApp->quit();
+}

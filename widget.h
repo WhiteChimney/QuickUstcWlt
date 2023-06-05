@@ -153,5 +153,6 @@ private slots:
     void on_buttonTcpStartScheduleCheck_clicked();
     void on_buttonTcpStopScheduleCheck_clicked();
     void on_buttonTcpStartScheduleLogin_clicked();
+    void on_buttonExit_clicked();
 };
 #endif // WIDGET_H
