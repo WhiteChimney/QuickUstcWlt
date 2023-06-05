@@ -67,7 +67,10 @@ Widget::~Widget()
 
 void Widget::setupUI()
 {
-    this->setWindowTitle(tr("首选项"));
+    this->setWindowTitle(tr("QuickUstcWlt V")
+                       + tr(PROJECT_VERSION_0) + tr(".")
+                       + tr(PROJECT_VERSION_1) + tr(".")
+                       + tr(PROJECT_VERSION_2));
     ui->comboDefaultTunnel->view()->setMinimumWidth(350);
     ui->comboboxScheduledLoginStyle->view()->setMinimumWidth(200);
     for (int i = 0; i < 7; i++)
