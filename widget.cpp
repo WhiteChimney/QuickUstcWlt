@@ -351,3 +351,4 @@ QByteArray Widget::passwordDecryption(QByteArray password, int key)
         password[i] -= key;
     return password;
 }
+
