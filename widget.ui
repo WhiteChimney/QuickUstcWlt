@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>407</width>
+    <width>432</width>
     <height>461</height>
    </rect>
   </property>
@@ -35,7 +35,7 @@
    <item row="1" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tabLoginInfo">
       <attribute name="title">
@@ -211,7 +211,7 @@
        <item row="0" column="0" colspan="4">
         <widget class="QScrollArea" name="scrollArea">
          <property name="horizontalScrollBarPolicy">
-          <enum>Qt::ScrollBarAlwaysOff</enum>
+          <enum>Qt::ScrollBarAsNeeded</enum>
          </property>
          <property name="widgetResizable">
           <bool>true</bool>
@@ -221,8 +221,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>365</width>
-            <height>351</height>
+            <width>360</width>
+            <height>332</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -376,9 +376,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>351</width>
-            <height>528</height>
+            <y>-137</y>
+            <width>345</width>
+            <height>636</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -438,89 +438,10 @@
              <layout class="QHBoxLayout" name="horizontalLayout_5">
               <item>
                <layout class="QGridLayout" name="gridLayout_5">
-                <item row="4" column="2" colspan="2">
-                 <widget class="QGroupBox" name="groupBox_3">
-                  <property name="title">
-                   <string/>
-                  </property>
-                  <layout class="QGridLayout" name="gridLayout_6">
-                   <item row="3" column="1">
-                    <widget class="QPushButton" name="buttonTcpStartScheduleLogin">
-                     <property name="text">
-                      <string>启用定时查询并登陆</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="2" column="1">
-                    <widget class="QPushButton" name="buttonTcpStartScheduleCheck">
-                     <property name="text">
-                      <string>启用定时查询</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="2" column="0">
-                    <widget class="QPushButton" name="buttonCheckRemoteNet">
-                     <property name="text">
-                      <string>查询通道</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="3" column="0">
-                    <widget class="QPushButton" name="buttonTcpStopScheduleCheck">
-                     <property name="text">
-                      <string>关闭定时查询</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-                <item row="5" column="2" colspan="2">
-                 <widget class="QLabel" name="labelServerMsg">
-                  <property name="text">
-                   <string>尚未连接</string>
-                  </property>
-                 </widget>
-                </item>
                 <item row="0" column="3">
                  <widget class="QPushButton" name="buttonStartConnect">
                   <property name="text">
                    <string>开始连接</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="2">
-                 <widget class="QLineEdit" name="textRemotePort">
-                  <property name="text">
-                   <string>23123</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="4" column="0">
-                 <widget class="QLabel" name="label_14">
-                  <property name="text">
-                   <string>其他命令</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="0">
-                 <widget class="QLabel" name="label_9">
-                  <property name="text">
-                   <string>端口号</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="3">
-                 <widget class="QPushButton" name="buttonStopConnect">
-                  <property name="text">
-                   <string>断开连接</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="5" column="0">
-                 <widget class="QLabel" name="label_10">
-                  <property name="text">
-                   <string>远程状态</string>
                   </property>
                  </widget>
                 </item>
@@ -531,10 +452,54 @@
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="3">
-                 <widget class="QPushButton" name="buttonRemoteLogin">
+                <item row="1" column="2">
+                 <widget class="QLineEdit" name="textRemotePort">
                   <property name="text">
-                   <string>设定通道</string>
+                   <string>23123</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="5" column="2" colspan="2">
+                 <widget class="QGroupBox" name="groupBox_3">
+                  <property name="title">
+                   <string/>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_6">
+                   <item row="3" column="0">
+                    <widget class="QPushButton" name="buttonTcpStartScheduleCheck">
+                     <property name="text">
+                      <string>启用定时查询</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="0">
+                    <widget class="QPushButton" name="buttonTcpStopScheduleCheck">
+                     <property name="text">
+                      <string>关闭定时查询</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="5" column="0">
+                    <widget class="QPushButton" name="buttonTcpStartScheduleLogin">
+                     <property name="text">
+                      <string>启用定时查询并登陆</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item row="1" column="3">
+                 <widget class="QPushButton" name="buttonStopConnect">
+                  <property name="text">
+                   <string>断开连接</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="5" column="0">
+                 <widget class="QLabel" name="label_14">
+                  <property name="text">
+                   <string>其他命令</string>
                   </property>
                  </widget>
                 </item>
@@ -545,14 +510,42 @@
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="0" rowspan="2">
-                 <widget class="QLabel" name="label_12">
+                <item row="3" column="3" rowspan="2">
+                 <widget class="QPushButton" name="buttonRemoteLogin">
                   <property name="text">
-                   <string>通道号</string>
+                   <string>设定通道</string>
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="2" rowspan="2">
+                <item row="6" column="2" colspan="2">
+                 <widget class="QLabel" name="labelServerMsg">
+                  <property name="text">
+                   <string>尚未连接</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="label_9">
+                  <property name="text">
+                   <string>端口号</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="6" column="0">
+                 <widget class="QLabel" name="label_10">
+                  <property name="text">
+                   <string>远程状态</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="3">
+                 <widget class="QPushButton" name="buttonCheckRemoteNet">
+                  <property name="text">
+                   <string>查询通道</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="2" rowspan="3">
                  <widget class="QComboBox" name="comboRemoteTunnel">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -620,6 +613,13 @@
                     <string>9 移动网出口</string>
                    </property>
                   </item>
+                 </widget>
+                </item>
+                <item row="2" column="0" rowspan="3">
+                 <widget class="QLabel" name="label_12">
+                  <property name="text">
+                   <string>通道号</string>
+                  </property>
                  </widget>
                 </item>
                </layout>
