@@ -221,8 +221,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>390</width>
-            <height>351</height>
+            <width>360</width>
+            <height>332</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -377,8 +377,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>376</width>
-            <height>594</height>
+            <width>345</width>
+            <height>629</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -396,21 +396,7 @@
                </widget>
               </item>
               <item>
-               <layout class="QFormLayout" name="formLayout_2">
-                <item row="1" column="0">
-                 <widget class="QLabel" name="label_7">
-                  <property name="text">
-                   <string>端口号</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <widget class="QLineEdit" name="textLocalPort">
-                  <property name="text">
-                   <string>23123</string>
-                  </property>
-                 </widget>
-                </item>
+               <layout class="QGridLayout" name="gridLayout_7">
                 <item row="0" column="0">
                  <widget class="QLabel" name="label_11">
                   <property name="text">
@@ -422,6 +408,20 @@
                  <widget class="QLabel" name="labelServerInfo">
                   <property name="text">
                    <string>未开启</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="label_7">
+                  <property name="text">
+                   <string>端口号</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QLineEdit" name="textLocalPort">
+                  <property name="text">
+                   <string>23123</string>
                   </property>
                  </widget>
                 </item>

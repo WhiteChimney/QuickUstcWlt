@@ -171,6 +171,7 @@ void Widget::on_buttonStartConnect_clicked()
     if (tcpClientConnectState)
         return;
 
+    ui->labelServerMsg->setText(tr("正在连接……"));
     tcpSocketClient = new QTcpSocket(this);
     connect(tcpSocketClient,&QTcpSocket::connected,this,[=](){tcpClientConnectState = true;});
     connect(tcpSocketClient,&QTcpSocket::readyRead,this,&Widget::dealClientRecvMsg);
