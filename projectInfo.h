@@ -3,6 +3,6 @@
 
 #define PROJECT_VERSION_0 "1"
 #define PROJECT_VERSION_1 "5"
-#define PROJECT_VERSION_2 "0"
+#define PROJECT_VERSION_2 "1"
 
 #endif // PROJECTINFO_H

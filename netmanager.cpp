@@ -84,7 +84,8 @@ int NetManager::getCurrentTunnel(QString* answer)
             return -1958;
     }
     else
-        if (answer->mid(answer->indexOf(QString("<br>\n权限"))+9,2).indexOf("校内"))
+        if (answer->mid(answer->indexOf(QString("<br>\n权限"))+9,2).indexOf("校内")
+               or answer->mid(answer->indexOf(QString("<br>\n权限"))+9,2).indexOf("国内"))
             return currentTunnel;
         else
             return currentTunnel + 1958;

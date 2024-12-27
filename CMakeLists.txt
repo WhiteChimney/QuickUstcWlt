@@ -18,6 +18,7 @@ if (WIN32)
     set(app_icon "${CMAKE_CURRENT_SOURCE_DIR}/images/app_icon_win.rc")
 else()
     if (APPLE)
+        set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
         set(MACOSX_BUNDLE_ICON_FILE WLT_logo.icns)
         set(app_icon "${CMAKE_CURRENT_SOURCE_DIR}/images/WLT_logo.icns")
         set_source_files_properties(${app_icon} PROPERTIES
